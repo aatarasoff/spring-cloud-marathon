@@ -1,0 +1,45 @@
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
+
+dependencies {
+    compile project(':autoconfigure')
+
+    compile "org.springframework.boot:spring-boot-starter-web"
+    compile "org.springframework.boot:spring-boot-starter-actuator"
+    compile "org.springframework.boot:spring-boot-configuration-processor"
+    compile "org.springframework.cloud:spring-cloud-commons"
+    compile "org.springframework.cloud:spring-cloud-netflix-core"
+    compile "org.springframework.cloud:spring-cloud-starter-ribbon"
+    compile "org.springframework.cloud:spring-cloud-starter-feign"
+
+    compile "com.mesosphere:marathon-client"
+}
+
+task sourceJar(type: Jar) {
+    from sourceSets.main.allJava
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifactId 'spring-cloud-marathon-starter'
+
+            from components.java
+
+            artifact sourceJar {
+                classifier "sources"
+            }
+        }
+    }
+}
+
+bintray {
+    user = System.properties['BINTRAY_USER']
+    key = System.properties['BINTRAY_KEY']
+    publications = ['mavenJava']
+    publish = true
+    pkg {
+        repo = 'maven'
+        name = 'spring-cloud-marathon-starter'
+    }
+}

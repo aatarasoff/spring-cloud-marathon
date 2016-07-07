@@ -1,0 +1,23 @@
+{
+  "id": "test-marathon-app",
+  "cpus": 0.5,
+  "mem": 64.0,
+  "instances": 2,
+  "container": {
+    "type": "DOCKER",
+    "docker": {
+      "image": "test-marathon-app",
+      "network": "BRIDGE",
+      "portMappings": [
+        { "containerPort": 9090, "servicePort": 9090, "protocol": "tcp" }
+      ]
+    }
+  },
+  "healthChecks": [
+    {
+      "protocol": "COMMAND",
+      "command": { "value": "echo 0" },
+      "maxConsecutiveFailures": 3
+    }
+  ]
+}

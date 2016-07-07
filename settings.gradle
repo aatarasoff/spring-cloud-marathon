@@ -1,0 +1,6 @@
+rootProject.name = 'spring-cloud-marathon'
+
+include 'autoconfigure'
+include 'example'
+include 'starter'
+

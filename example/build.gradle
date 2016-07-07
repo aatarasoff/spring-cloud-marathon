@@ -1,0 +1,16 @@
+apply plugin: 'spring-boot'
+
+dependencies {
+    compile project(":starter")
+}
+
+jar{
+    archiveName 'app.jar'
+}
+
+task createDockerImageForMarathon(type: Exec) {
+    workingDir "${project.projectDir}"
+    commandLine 'docker', 'build', '--tag=test-marathon-app', '.'
+}
+
+createDockerImageForMarathon.dependsOn build
