@@ -1,6 +1,7 @@
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'jacoco'
+apply plugin: 'com.github.kt3k.coveralls'
 
 dependencies {
     provided "org.springframework.boot:spring-boot-starter-web", optional
@@ -16,6 +17,13 @@ dependencies {
 
 jacoco {
     toolVersion = "0.7.6.201602180812"
+}
+
+jacocoTestReport {
+    reports {
+        xml.enabled = true
+        html.enabled = true
+    }
 }
 
 task sourceJar(type: Jar) {
