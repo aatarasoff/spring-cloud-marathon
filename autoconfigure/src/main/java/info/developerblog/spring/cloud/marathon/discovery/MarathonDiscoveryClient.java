@@ -49,7 +49,7 @@ public class MarathonDiscoveryClient implements DiscoveryClient {
     @Override
     public List<ServiceInstance> getInstances(String serviceId) {
         try {
-            return client.getTasks()
+            return client.getAppTasks(serviceId)
                     .getTasks()
                     .parallelStream()
                     .filter(task -> null == task.getHealthCheckResults() ||

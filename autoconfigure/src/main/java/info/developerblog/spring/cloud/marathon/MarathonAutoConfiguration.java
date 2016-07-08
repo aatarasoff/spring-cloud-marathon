@@ -23,9 +23,6 @@ public class MarathonAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public Marathon marathonClient(MarathonProperties properties) {
-        return MarathonClient.getInstance(
-                properties.getScheme() + "://" + properties.getHost() + ":" + properties.getPort()
-        );
-
+        return MarathonClient.getInstance(properties.getEndpoint());
     }
 }

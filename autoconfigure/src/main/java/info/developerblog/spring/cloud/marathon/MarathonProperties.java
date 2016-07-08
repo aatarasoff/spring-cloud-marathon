@@ -21,4 +21,8 @@ public class MarathonProperties {
     private int port = 8080;
 
     private boolean enabled = true;
+
+    public String getEndpoint() {
+        return this.getScheme() + "://" + this.getHost() + ":" + this.getPort();
+    }
 }

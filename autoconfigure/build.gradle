@@ -1,5 +1,6 @@
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
+apply plugin: 'jacoco'
 
 dependencies {
     provided "org.springframework.boot:spring-boot-starter-web", optional
@@ -11,6 +12,10 @@ dependencies {
     provided "org.springframework.cloud:spring-cloud-starter-feign", optional
 
     provided "com.mesosphere:marathon-client", optional
+}
+
+jacoco {
+    toolVersion = "0.7.6.201602180812"
 }
 
 task sourceJar(type: Jar) {
