@@ -13,7 +13,7 @@ repositories {
 }
 ```
 
-And add dependency with latest version (also you may feel free and choose specific)
+And add dependency with latest version (or feel free to choose specific)
 ```
 compile 'info.developerblog.spring.cloud:spring-cloud-marathon-starter:+'
 ```
@@ -29,18 +29,17 @@ Build sample application docker image:
 ./gradlew dockerBuild
 ```
 
-Install native docker on Linux or docker-beta on MacOS X or Windows.
-Then go to 'example' project and run `docker-compose`:
+Install native docker on Linux or docker-beta on MacOS X or Windows and run `docker-compose`:
 ```
 docker-compose up -d
 ```
 
-Upload `test-marathon-app-manifest.json` as application manifest:
+Then upload `test-marathon-app-manifest.json` as application manifest:
 ```
 curl -XPOST http://localhost:8080/v2/apps?force=true -H "Content-Type: application/json" --data-binary @test-marathon-app-manifest.json -v
 ```
 
-Then go back to project root directory && run the example application:
+and run the example application:
 ```
 ./gradlew bootRun
 ```
@@ -50,7 +49,7 @@ Add following record into your `/etc/hosts` file:
 127.0.0.1 mesos-slave
 ```
 
-And test application by curl:
+and test application by curl:
 ```
 curl localhost:9090/instances
 curl localhost:9090/feign

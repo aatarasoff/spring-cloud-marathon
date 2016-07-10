@@ -2,6 +2,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'jacoco'
 apply plugin: 'com.github.kt3k.coveralls'
+apply plugin: 'nebula.integtest-standalone'
 
 dependencies {
     provided "org.springframework.boot:spring-boot-starter-web", optional
@@ -54,3 +55,22 @@ bintray {
         name = 'spring-cloud-marathon-autoconfigure'
     }
 }
+
+task integrationTestsSetup(type: Exec) {
+    workingDir "${rootProject.projectDir}"
+    commandLine 'docker-compose', 'up', '-d'
+}
+
+task integrationTestsStop(type: Exec) {
+    workingDir "${rootProject.projectDir}"
+    commandLine 'docker-compose', 'stop'
+}
+
+task integrationTestsTeardown(type: Exec) {
+    workingDir "${rootProject.projectDir}"
+    commandLine 'docker-compose', 'rm', '-f'
+}
+
+integrationTestsTeardown.dependsOn(integrationTestsStop)
+integrationTest.dependsOn(integrationTestsSetup)
+integrationTest.finalizedBy(integrationTestsTeardown)
