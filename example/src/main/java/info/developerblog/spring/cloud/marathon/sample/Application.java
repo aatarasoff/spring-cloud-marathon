@@ -66,6 +66,11 @@ public class Application {
         return loadBalancer.choose(appName);
     }
 
+    @RequestMapping("/services")
+    public List<String> services() {
+        return discoveryClient.getServices();
+    }
+
     @RequestMapping("/rest")
     public String rest() {
         return this.restTemplate.getForObject("http://"+appName+"/me", String.class);

@@ -5,6 +5,7 @@ import mesosphere.marathon.client.model.v2.*;
 import mesosphere.marathon.client.utils.MarathonException;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.cloud.client.DefaultServiceInstance;
 import org.unitils.reflectionassert.ReflectionAssert;
@@ -23,11 +24,11 @@ import static org.mockito.Mockito.when;
  * Created by aleksandr on 08.07.16.
  */
 public class MarathonDiscoveryClientTests {
-    private MarathonDiscoveryClient discoveryClient;
-    private Marathon marathonClient = mock(Marathon.class);
+    private static MarathonDiscoveryClient discoveryClient;
+    private static Marathon marathonClient = mock(Marathon.class);
 
-    @Before
-    public void setup() {
+    @BeforeClass
+    public static void setup() {
         discoveryClient = new MarathonDiscoveryClient(
                 marathonClient,
                 new MarathonDiscoveryProperties()

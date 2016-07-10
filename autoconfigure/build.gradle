@@ -59,18 +59,26 @@ bintray {
 task integrationTestsSetup(type: Exec) {
     workingDir "${rootProject.projectDir}"
     commandLine 'docker-compose', 'up', '-d'
+    doLast {
+        sleep 10000
+    }
 }
 
-task integrationTestsStop(type: Exec) {
+task integrationTestsDeploy(type: Exec) {
     workingDir "${rootProject.projectDir}"
-    commandLine 'docker-compose', 'stop'
+    commandLine "bash", "-c", "curl -XPOST http://localhost:8080/v2/apps?force=true -v " +
+            "-H \"Content-Type: application/json\" " +
+            "--data-binary @test-marathon-app-manifest.json"
+    doLast {
+        sleep 10000
+    }
 }
 
 task integrationTestsTeardown(type: Exec) {
     workingDir "${rootProject.projectDir}"
-    commandLine 'docker-compose', 'rm', '-f'
+    commandLine "bash", "-c", "docker-compose stop && docker-compose rm -f"
 }
 
-integrationTestsTeardown.dependsOn(integrationTestsStop)
-integrationTest.dependsOn(integrationTestsSetup)
+integrationTestsDeploy.dependsOn(integrationTestsSetup)
+integrationTest.dependsOn(integrationTestsDeploy)
 integrationTest.finalizedBy(integrationTestsTeardown)
