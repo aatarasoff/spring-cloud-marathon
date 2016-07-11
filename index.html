@@ -1,0 +1,103 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <title>Spring Cloud Marathon by aatarasoff</title>
+
+    <link rel="stylesheet" href="stylesheets/styles.css">
+    <link rel="stylesheet" href="stylesheets/github-light.css">
+    <meta name="viewport" content="width=device-width">
+    <!--[if lt IE 9]>
+    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="wrapper">
+      <header>
+        <h1>Spring Cloud Marathon</h1>
+        <p>Spring Cloud integration with Mesos and Marathon</p>
+
+        <p class="view"><a href="https://github.com/aatarasoff/spring-cloud-marathon">View the Project on GitHub <small>aatarasoff/spring-cloud-marathon</small></a></p>
+
+
+        <ul>
+          <li><a href="https://github.com/aatarasoff/spring-cloud-marathon/zipball/master">Download <strong>ZIP File</strong></a></li>
+          <li><a href="https://github.com/aatarasoff/spring-cloud-marathon/tarball/master">Download <strong>TAR Ball</strong></a></li>
+          <li><a href="https://github.com/aatarasoff/spring-cloud-marathon">View On <strong>GitHub</strong></a></li>
+        </ul>
+      </header>
+      <section>
+        <h1>
+<a id="spring-cloud-marathon" class="anchor" href="#spring-cloud-marathon" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Spring Cloud Marathon</h1>
+
+<p><a href="https://gitter.im/aatarasoff/spring-cloud-marathon?utm_source=badge&amp;utm_medium=badge&amp;utm_campaign=pr-badge&amp;utm_content=badge"><img src="https://badges.gitter.im/aatarasoff/spring-cloud-marathon.svg" alt="Join the chat at https://gitter.im/aatarasoff/spring-cloud-marathon"></a> <a href="https://travis-ci.org/aatarasoff/spring-cloud-marathon"><img src="https://travis-ci.org/aatarasoff/spring-cloud-marathon.svg?branch=master" alt="Build Status"></a> <a href="https://coveralls.io/github/aatarasoff/spring-cloud-marathon?branch=master"><img src="https://coveralls.io/repos/github/aatarasoff/spring-cloud-marathon/badge.svg?branch=master" alt="Coverage Status"></a></p>
+
+<p>This project helps with integration between <a href="http://projects.spring.io/spring-cloud/">Spring Cloud</a> and <a href="https://mesosphere.github.io/marathon/">Marathon framework</a> for <a href="http://mesos.apache.org/">Apache Mesos</a></p>
+
+<h2>
+<a id="how-to-connect-the-project" class="anchor" href="#how-to-connect-the-project" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>How to connect the project</h2>
+
+<p>Add <code>jcenter</code> repository:</p>
+
+<pre><code>repositories {
+    jcenter()
+}
+</code></pre>
+
+<p>And add dependency with latest version (or feel free to choose specific)</p>
+
+<pre><code>compile 'info.developerblog.spring.cloud:spring-cloud-marathon-starter:+'
+</code></pre>
+
+<h2>
+<a id="supported-patterns" class="anchor" href="#supported-patterns" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Supported patterns</h2>
+
+<p>Spring Cloud <code>DiscoveryClient</code> implementation (supports Ribbon and Zuul)</p>
+
+<h2>
+<a id="running-the-example" class="anchor" href="#running-the-example" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Running the example</h2>
+
+<p>Build sample application docker image:</p>
+
+<pre><code>./gradlew dockerBuild
+</code></pre>
+
+<p>Install native docker on Linux or docker-beta on MacOS X or Windows and run <code>docker-compose</code>:</p>
+
+<pre><code>docker-compose up -d
+</code></pre>
+
+<p>Then upload <code>test-marathon-app-manifest.json</code> as application manifest:</p>
+
+<pre><code>curl -XPOST http://localhost:8080/v2/apps?force=true -H "Content-Type: application/json" --data-binary @test-marathon-app-manifest.json -v
+</code></pre>
+
+<p>and run the example application:</p>
+
+<pre><code>./gradlew bootRun
+</code></pre>
+
+<p>Add following record into your <code>/etc/hosts</code> file:</p>
+
+<pre><code>127.0.0.1 mesos-slave
+</code></pre>
+
+<p>and test application by curl:</p>
+
+<pre><code>curl localhost:9090/instances
+curl localhost:9090/feign
+</code></pre>
+
+<h2>
+<a id="enjoy" class="anchor" href="#enjoy" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Enjoy!</h2>
+      </section>
+      <footer>
+        <p>This project is maintained by <a href="https://github.com/aatarasoff">aatarasoff</a></p>
+        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
+      </footer>
+    </div>
+    <script src="javascripts/scale.fix.js"></script>
+    
+  </body>
+</html>
