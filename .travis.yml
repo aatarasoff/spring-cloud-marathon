@@ -32,5 +32,5 @@ before_install:
   - ./gradlew dockerBuild
 
 after_success:
-  - ./gradlew integrationTest --debug
+  - ./gradlew integrationTest --info
   - ./gradlew jacocoTestReport coveralls
