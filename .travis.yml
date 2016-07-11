@@ -31,6 +31,8 @@ before_install:
   - sudo mv docker-compose /usr/local/bin
   - ./gradlew dockerBuild
 
+script:
+  - ./gradlew gradle check integrationTest --info
+
 after_success:
-  - ./gradlew integrationTest --info
   - ./gradlew jacocoTestReport coveralls
