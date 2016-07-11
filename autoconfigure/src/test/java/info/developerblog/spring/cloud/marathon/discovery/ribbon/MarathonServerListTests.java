@@ -3,9 +3,7 @@ package info.developerblog.spring.cloud.marathon.discovery.ribbon;
 import com.netflix.client.config.IClientConfig;
 import info.developerblog.spring.cloud.marathon.discovery.MarathonDiscoveryProperties;
 import mesosphere.marathon.client.Marathon;
-import mesosphere.marathon.client.model.v2.GetAppTasksResponse;
-import mesosphere.marathon.client.model.v2.HealthCheckResult;
-import mesosphere.marathon.client.model.v2.Task;
+import mesosphere.marathon.client.model.v2.*;
 import mesosphere.marathon.client.utils.MarathonException;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,10 +11,12 @@ import org.unitils.reflectionassert.ReflectionAssert;
 import org.unitils.reflectionassert.ReflectionComparatorMode;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -39,76 +39,44 @@ public class MarathonServerListTests {
 
         serverList.initWithNiwsConfig(config);
 
-        GetAppTasksResponse tasksResponse = new GetAppTasksResponse();
+        GetAppResponse appResponse = new GetAppResponse();
 
-        when(marathonClient.getAppTasks("service1"))
-                .thenReturn(tasksResponse);
+        when(marathonClient.getApp("service1"))
+                .thenReturn(appResponse);
 
-        tasksResponse.setTasks(new ArrayList<>());
+        App app = new App();
+        appResponse.setApp(app);
 
-        Task taskWithNoHealthChecks = new Task();
-        taskWithNoHealthChecks.setAppId("app1");
-        taskWithNoHealthChecks.setHost("host1");
-        taskWithNoHealthChecks.setPorts(
-                IntStream.of(9090)
-                        .boxed()
-                        .collect(Collectors.toList())
+        app.setTasks(IntStream.of(1,2)
+                        .mapToObj(index -> {
+                            Task task = new Task();
+                            task.setHost("host" + index);
+                            task.setPorts(IntStream.of(9090, 9091)
+                                    .boxed()
+                                    .collect(Collectors.toList()));
+                            task.setHealthCheckResults(Collections.emptyList());
+                            return task;
+                        }).collect(Collectors.toList())
         );
 
-        tasksResponse.getTasks().add(taskWithNoHealthChecks);
-
-        Task taskWithAllGoodHealthChecks = new Task();
-        taskWithAllGoodHealthChecks.setAppId("app1");
-        taskWithAllGoodHealthChecks.setHost("host2");
-        taskWithAllGoodHealthChecks.setPorts(
-                IntStream.of(9090, 9091)
-                        .boxed()
-                        .collect(Collectors.toList())
-        );
-
-        HealthCheckResult healthCheckResult = new HealthCheckResult();
-        healthCheckResult.setAlive(true);
-
-        HealthCheckResult badHealthCheckResult = new HealthCheckResult();
-        badHealthCheckResult.setAlive(false);
-
-        List<HealthCheckResult> healthCheckResults = new ArrayList<>();
-        healthCheckResults.add(healthCheckResult);
-        healthCheckResults.add(healthCheckResult);
-
-        taskWithAllGoodHealthChecks.setHealthCheckResults(healthCheckResults);
-
-        tasksResponse.getTasks().add(taskWithAllGoodHealthChecks);
-
-        Task taskWithOneBadHealthCheck = new Task();
-        taskWithOneBadHealthCheck.setAppId("app1");
-        taskWithOneBadHealthCheck.setHost("host3");
-        taskWithOneBadHealthCheck.setPorts(
-                IntStream.of(9090)
-                        .boxed()
-                        .collect(Collectors.toList())
-        );
-
-        List<HealthCheckResult> withBadHealthCheckResults = new ArrayList<>();
-        withBadHealthCheckResults.add(healthCheckResult);
-        withBadHealthCheckResults.add(badHealthCheckResult);
-
-        taskWithOneBadHealthCheck.setHealthCheckResults(withBadHealthCheckResults);
-
-        tasksResponse.getTasks().add(taskWithOneBadHealthCheck);
-
+        Task withNullHealthChecks = new Task();
+        withNullHealthChecks.setHost("host3");
+        withNullHealthChecks.setPorts(IntStream.of(9090, 9091)
+                .boxed()
+                .collect(Collectors.toList()));
+        app.getTasks().add(withNullHealthChecks);
     }
 
     @Test
     public void test_initial_list_of_servers() throws MarathonException {
         ReflectionAssert.assertReflectionEquals(
-                "should be two servers",
-                IntStream.of(1,2)
+                "should be three servers",
+                IntStream.of(1,2,3)
                         .mapToObj(index ->
                                 new MarathonServer(
                                         "host" + index,
-                                        9090
-                                )
+                                        9090,
+                                        Collections.emptyList())
                         ).collect(Collectors.toList()),
                 serverList.getInitialListOfServers(),
                 ReflectionComparatorMode.LENIENT_ORDER
@@ -118,16 +86,22 @@ public class MarathonServerListTests {
     @Test
     public void test_updated_list_of_servers() throws MarathonException {
         ReflectionAssert.assertReflectionEquals(
-                "should be two servers",
-                IntStream.of(1,2)
+                "should be three servers",
+                IntStream.of(1,2,3)
                         .mapToObj(index ->
                                 new MarathonServer(
                                         "host" + index,
-                                        9090
-                                )
+                                        9090,
+                                        Collections.emptyList())
                         ).collect(Collectors.toList()),
                 serverList.getUpdatedListOfServers(),
                 ReflectionComparatorMode.LENIENT_ORDER
         );
+    }
+
+    @Test
+    public void test_with_null_client() {
+        MarathonServerList serverList = new MarathonServerList(null, new MarathonDiscoveryProperties());
+        assertTrue(serverList.getInitialListOfServers().isEmpty());
     }
 }

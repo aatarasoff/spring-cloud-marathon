@@ -1,10 +1,7 @@
 package info.developerblog.spring.cloud.marathon.discovery.ribbon;
 
 import com.netflix.client.config.IClientConfig;
-import com.netflix.loadbalancer.IPing;
-import com.netflix.loadbalancer.Server;
-import com.netflix.loadbalancer.ServerList;
-import com.netflix.loadbalancer.ServerListFilter;
+import com.netflix.loadbalancer.*;
 import info.developerblog.spring.cloud.marathon.discovery.MarathonDiscoveryProperties;
 import mesosphere.marathon.client.Marathon;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +30,7 @@ public class MarathonRibbonClientConfiguration {
 
     @Bean
     public ServerListFilter<Server> ribbonServerListFilter() {
-        return new HealthServiceServerListFilter();
+        return new MarathonServiceHealthCheckFilter();
     }
 
     @Bean

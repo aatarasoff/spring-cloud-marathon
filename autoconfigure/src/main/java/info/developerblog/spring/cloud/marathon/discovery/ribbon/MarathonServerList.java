@@ -5,9 +5,13 @@ import com.netflix.loadbalancer.AbstractServerList;
 import info.developerblog.spring.cloud.marathon.discovery.MarathonDiscoveryProperties;
 import lombok.extern.slf4j.Slf4j;
 import mesosphere.marathon.client.Marathon;
+import mesosphere.marathon.client.model.v2.App;
+import mesosphere.marathon.client.model.v2.HealthCheck;
 import mesosphere.marathon.client.model.v2.HealthCheckResult;
 import mesosphere.marathon.client.utils.MarathonException;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,18 +52,22 @@ public class MarathonServerList extends AbstractServerList<MarathonServer> {
         }
 
         try {
-            return client.getAppTasks(serviceId)
-                    .getTasks()
+            final App app = client.getApp(serviceId).getApp();
+
+            return app.getTasks()
                     .parallelStream()
-                    .filter(task -> null == task.getHealthCheckResults() ||
-                            task.getHealthCheckResults()
-                                    .stream()
-                                    .allMatch(HealthCheckResult::isAlive)
-                    )
-                    .map(task -> new MarathonServer(
-                            task.getHost(),
-                            task.getPorts().stream().findFirst().orElse(0)
-                    ))
+                    .map(task -> {
+                        Collection<HealthCheckResult> healthChecks =
+                                null != task.getHealthCheckResults()
+                                    ? task.getHealthCheckResults()
+                                    : new ArrayList<>();
+
+                        return new MarathonServer(
+                                task.getHost(),
+                                task.getPorts().stream().findFirst().orElse(0),
+                                healthChecks
+                        );
+                    })
                     .collect(Collectors.toList());
         } catch (MarathonException e) {
             log.error(e.getMessage(), e);

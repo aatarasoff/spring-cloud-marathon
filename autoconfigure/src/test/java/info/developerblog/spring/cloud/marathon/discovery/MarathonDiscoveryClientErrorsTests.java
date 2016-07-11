@@ -3,7 +3,6 @@ package info.developerblog.spring.cloud.marathon.discovery;
 import mesosphere.marathon.client.Marathon;
 import mesosphere.marathon.client.utils.MarathonException;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 

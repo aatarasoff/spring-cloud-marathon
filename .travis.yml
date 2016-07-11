@@ -19,9 +19,20 @@ cache:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 
+env:
+  DOCKER_COMPOSE_VERSION: 1.8.0-rc2
+
 before_install:
+  - sudo apt-get update -y
+  - sudo apt-get -o Dpkg::Options::="--force-confnew" install -y docker-engine
+  - sudo rm /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
   - ./gradlew dockerBuild
 
+script:
+  - ./gradlew check integrationTest --info
+
 after_success:
-  - ./gradlew integrationTest
   - ./gradlew jacocoTestReport coveralls
