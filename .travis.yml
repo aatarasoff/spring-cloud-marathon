@@ -32,7 +32,7 @@ before_install:
   - ./gradlew dockerBuild
 
 script:
-  - ./gradlew gradle check integrationTest --info
+  - ./gradlew check integrationTest --info
 
 after_success:
   - ./gradlew jacocoTestReport coveralls
