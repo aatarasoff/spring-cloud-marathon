@@ -2,12 +2,8 @@ package info.developerblog.spring.cloud.marathon.discovery;
 
 import info.developerblog.spring.cloud.marathon.MarathonAutoConfiguration;
 import info.developerblog.spring.cloud.marathon.discovery.ribbon.RibbonMarathonAutoConfiguration;
-import mesosphere.marathon.client.Marathon;
-import mesosphere.marathon.client.model.v2.*;
-import mesosphere.marathon.client.utils.MarathonException;
-import org.junit.*;
+import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.junit.runners.MethodSorters;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -17,8 +13,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 
