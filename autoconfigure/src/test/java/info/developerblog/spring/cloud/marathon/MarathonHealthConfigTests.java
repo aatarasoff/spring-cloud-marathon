@@ -2,11 +2,11 @@ package info.developerblog.spring.cloud.marathon;
 
 import info.developerblog.spring.cloud.marathon.discovery.MarathonDiscoveryClientAutoConfiguration;
 import mesosphere.marathon.client.Marathon;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Answers;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -36,6 +36,9 @@ public class MarathonHealthConfigTests {
     @Autowired
     private WebApplicationContext context;
 
+    @Autowired
+    private Marathon client;
+
     private MockMvc mvc;
 
     @Before
@@ -47,7 +50,7 @@ public class MarathonHealthConfigTests {
 
     @Test
     public void test_health_endpoint() throws Exception {
-        System.out.println(mvc.perform(get("/health")).andReturn().getResponse().getContentAsString());
+        Assert.assertEquals(200, mvc.perform(get("/health")).andReturn().getResponse().getStatus());
     }
 
     @Configuration
