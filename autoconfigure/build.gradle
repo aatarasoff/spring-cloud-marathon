@@ -60,7 +60,7 @@ task integrationTestsSetup(type: Exec) {
     workingDir "${rootProject.projectDir}"
     commandLine 'docker-compose', 'up', '-d'
     doLast {
-        sleep 10000
+        sleep 30000
     }
 }
 
@@ -70,7 +70,7 @@ task integrationTestsDeploy(type: Exec) {
             "-H \"Content-Type: application/json\" " +
             "--data-binary @test-marathon-app-manifest.json"
     doLast {
-        sleep 20000
+        sleep 30000
     }
 }
 
