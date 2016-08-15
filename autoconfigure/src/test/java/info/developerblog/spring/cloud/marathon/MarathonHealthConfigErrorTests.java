@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
  * Created by aleksandr on 08.08.16.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = MarathonHealthConfigTests.TestConfig.class)
+@SpringApplicationConfiguration(classes = MarathonHealthConfigErrorTests.TestConfig.class)
 @WebIntegrationTest(randomPort = true)
 @DirtiesContext
 public class MarathonHealthConfigErrorTests {

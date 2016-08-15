@@ -2,11 +2,11 @@ package info.developerblog.spring.cloud.marathon;
 
 import info.developerblog.spring.cloud.marathon.discovery.MarathonDiscoveryClientAutoConfiguration;
 import mesosphere.marathon.client.Marathon;
+import mesosphere.marathon.client.utils.MarathonException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Answers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -22,32 +22,36 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.withSettings;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 
 /**
- * Created by aleksandr on 01.08.16.
+ * Created by aleksandr on 12.08.16.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = MarathonHealthConfigTests.TestConfig.class)
+@SpringApplicationConfiguration(classes = MarathonEndpointErrorTests.TestConfig.class)
 @WebIntegrationTest(randomPort = true)
 @DirtiesContext
-public class MarathonHealthConfigTests {
+public class MarathonEndpointErrorTests {
     @Autowired
     private WebApplicationContext context;
+
+    @Autowired
+    private Marathon client;
 
     private MockMvc mvc;
 
     @Before
-    public void setup() {
+    public void setup() throws MarathonException {
         mvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .build();
+        when(client.getServerInfo()).thenThrow(new RuntimeException());
     }
 
     @Test
-    public void test_health_endpoint() throws Exception {
-        Assert.assertEquals(200, mvc.perform(get("/health")).andReturn().getResponse().getStatus());
+    public void test_unhealthy_endpoint() throws Exception {
+        Assert.assertEquals(200, mvc.perform(get("/marathon")).andReturn().getResponse().getStatus());
     }
 
     @Configuration
@@ -57,7 +61,7 @@ public class MarathonHealthConfigTests {
     public static class TestConfig {
         @Bean
         public Marathon marathonClient(MarathonProperties properties) {
-            return mock(Marathon.class, withSettings().defaultAnswer(Answers.RETURNS_MOCKS.get()));
+            return mock(Marathon.class);
         }
     }
 }

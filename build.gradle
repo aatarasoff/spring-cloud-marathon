@@ -43,6 +43,7 @@ allprojects {
             dependency 'com.mesosphere:marathon-client:0.2.0'
             dependency 'org.mockito:mockito-all:1.9.5'
             dependency 'org.unitils:unitils-core:3.4.2'
+            dependency 'com.jayway.jsonpath:json-path:2.2.0'
         }
     }
 
@@ -72,5 +73,6 @@ subprojects {
         testCompile 'org.springframework.boot:spring-boot-starter-test'
         testCompile 'org.mockito:mockito-all'
         testCompile 'org.unitils:unitils-core'
+        testCompile 'com.jayway.jsonpath:json-path'
     }
 }

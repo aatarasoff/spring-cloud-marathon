@@ -11,6 +11,7 @@ import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.client.loadbalancer.LoadBalanced;
 import org.springframework.cloud.client.loadbalancer.LoadBalancerClient;
+import org.springframework.cloud.client.loadbalancer.LoadBalancerRequest;
 import org.springframework.cloud.netflix.feign.EnableFeignClients;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.context.annotation.Bean;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.IOException;
+import java.net.URI;
 import java.util.List;
 
 /**
@@ -50,7 +53,7 @@ public class Application {
     private RestTemplate restTemplate;
 
     @Value("${spring.application.name:test-marathon-app}")
-    private String appName;
+    private String serviceId;
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
@@ -58,12 +61,7 @@ public class Application {
 
     @RequestMapping("/me")
     public String me() {
-        return appName;
-    }
-
-    @RequestMapping("/")
-    public ServiceInstance lb() {
-        return loadBalancer.choose(appName);
+        return serviceId;
     }
 
     @RequestMapping("/services")
@@ -73,17 +71,32 @@ public class Application {
 
     @RequestMapping("/rest")
     public String rest() {
-        return this.restTemplate.getForObject("http://"+appName+"/me", String.class);
+        return this.restTemplate.getForObject("http://"+ serviceId +"/me", String.class);
+    }
+
+    @RequestMapping("/")
+    public ServiceInstance lb() {
+        return loadBalancer.choose(serviceId);
+    }
+
+    @RequestMapping("/url")
+    public String realUrl() throws IOException {
+        return loadBalancer.execute(serviceId, instance ->
+                loadBalancer.reconstructURI(
+                        instance,
+                        new URI("http://"+ serviceId +"/me")
+                )
+        ).toString();
     }
 
     @RequestMapping("/choose")
     public String choose() {
-        return loadBalancer.choose(appName).getUri().toString();
+        return loadBalancer.choose(serviceId).getUri().toString();
     }
 
     @RequestMapping("/instances")
     public List<ServiceInstance> instances() {
-        return discoveryClient.getInstances(appName);
+        return discoveryClient.getInstances(serviceId);
     }
 
     @RequestMapping("/feign")
