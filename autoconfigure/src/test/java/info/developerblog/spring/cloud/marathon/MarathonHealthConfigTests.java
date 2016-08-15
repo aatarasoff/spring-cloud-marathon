@@ -36,6 +36,9 @@ public class MarathonHealthConfigTests {
     @Autowired
     private WebApplicationContext context;
 
+    @Autowired
+    private Marathon client;
+
     private MockMvc mvc;
 
     @Before
