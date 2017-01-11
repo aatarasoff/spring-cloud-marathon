@@ -3,10 +3,6 @@ sudo: required
 services:
   - docker
 
-addons:
-  hosts:
-    - mesos-slave
-
 language: java
 
 jdk:
@@ -14,25 +10,14 @@ jdk:
 
 before_cache:
   - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+
 cache:
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
 
-env:
-  DOCKER_COMPOSE_VERSION: 1.8.0-rc2
-
-before_install:
-  - sudo apt-get update -y
-  - sudo apt-get -o Dpkg::Options::="--force-confnew" install -y docker-engine
-  - sudo rm /usr/local/bin/docker-compose
-  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
-  - chmod +x docker-compose
-  - sudo mv docker-compose /usr/local/bin
-  - ./gradlew dockerBuild
-
 script:
-  - ./gradlew check integrationTest --info
+  - ./gradlew check --info
 
 after_success:
   - ./gradlew jacocoTestReport coveralls

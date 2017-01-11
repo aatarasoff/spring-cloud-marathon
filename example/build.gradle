@@ -2,6 +2,7 @@ apply plugin: 'spring-boot'
 
 dependencies {
     compile project(":starter")
+    //compile 'org.springframework.cloud:spring-cloud-starter-eureka'
 }
 
 jar{
