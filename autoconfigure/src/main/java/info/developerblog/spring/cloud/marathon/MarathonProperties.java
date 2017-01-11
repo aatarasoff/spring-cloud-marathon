@@ -20,9 +20,21 @@ public class MarathonProperties {
     @NotNull
     private int port = 8080;
 
+    private String endpoint = null;
+
+    private String listOfServers = null;
+
+    private String username = null;
+
+    private String password = null;
+
     private boolean enabled = true;
 
     public String getEndpoint() {
+        if (null != endpoint) {
+            return endpoint;
+        }
+
         return this.getScheme() + "://" + this.getHost() + ":" + this.getPort();
     }
 }

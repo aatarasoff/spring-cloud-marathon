@@ -4,6 +4,7 @@ import info.developerblog.spring.cloud.marathon.actuator.MarathonEndpoint;
 import info.developerblog.spring.cloud.marathon.actuator.MarathonHealthIndicator;
 import mesosphere.marathon.client.Marathon;
 import mesosphere.marathon.client.MarathonClient;
+import mesosphere.marathon.client.RibbonMarathonClient;
 import org.springframework.boot.actuate.endpoint.Endpoint;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -27,7 +28,11 @@ public class MarathonAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public Marathon marathonClient(MarathonProperties properties) {
-        return MarathonClient.getInstance(properties.getEndpoint());
+        return new RibbonMarathonClient.Builder(properties.getEndpoint())
+                .withListOfServers(properties.getListOfServers())
+                .withUsername(properties.getUsername())
+                .withPassword(properties.getPassword())
+                .build();
     }
 
     @Configuration

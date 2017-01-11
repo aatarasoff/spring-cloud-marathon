@@ -41,6 +41,7 @@ allprojects {
         dependencies {
             dependency 'org.projectlombok:lombok:1.16.8'
             dependency 'com.mesosphere:marathon-client:0.3.0'
+            dependency 'com.netflix.feign:feign-ribbon:8.14.1'
             dependency 'org.mockito:mockito-all:1.10.19'
             dependency 'org.unitils:unitils-core:3.4.2'
             dependency 'com.jayway.jsonpath:json-path:2.2.0'

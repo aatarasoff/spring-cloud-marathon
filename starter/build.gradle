@@ -13,6 +13,7 @@ dependencies {
     compile "org.springframework.cloud:spring-cloud-starter-feign"
 
     compile "com.mesosphere:marathon-client"
+    compile "com.netflix.feign:feign-ribbon"
 }
 
 task sourceJar(type: Jar) {
