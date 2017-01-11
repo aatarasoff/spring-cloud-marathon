@@ -3,6 +3,7 @@ package info.developerblog.spring.cloud.marathon.discovery.ribbon;
 import com.netflix.client.config.IClientConfig;
 import com.netflix.loadbalancer.AbstractServerList;
 import info.developerblog.spring.cloud.marathon.discovery.MarathonDiscoveryProperties;
+import info.developerblog.spring.cloud.marathon.utils.ServiceIdConverter;
 import lombok.extern.slf4j.Slf4j;
 import mesosphere.marathon.client.Marathon;
 import mesosphere.marathon.client.model.v2.App;
@@ -33,7 +34,7 @@ public class MarathonServerList extends AbstractServerList<MarathonServer> {
 
     @Override
     public void initWithNiwsConfig(IClientConfig clientConfig) {
-        serviceId = clientConfig.getClientName();
+        serviceId = ServiceIdConverter.convertToMarathonId(clientConfig.getClientName());
     }
 
     @Override

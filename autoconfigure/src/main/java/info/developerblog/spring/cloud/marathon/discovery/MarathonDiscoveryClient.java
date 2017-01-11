@@ -1,5 +1,6 @@
 package info.developerblog.spring.cloud.marathon.discovery;
 
+import info.developerblog.spring.cloud.marathon.utils.ServiceIdConverter;
 import lombok.extern.slf4j.Slf4j;
 import mesosphere.marathon.client.Marathon;
 import mesosphere.marathon.client.model.v2.App;
@@ -49,7 +50,7 @@ public class MarathonDiscoveryClient implements DiscoveryClient {
     @Override
     public List<ServiceInstance> getInstances(String serviceId) {
         try {
-            return client.getAppTasks(serviceId)
+            return client.getAppTasks(ServiceIdConverter.convertToMarathonId(serviceId))
                     .getTasks()
                     .parallelStream()
                     .filter(task -> null == task.getHealthCheckResults() ||
@@ -58,7 +59,7 @@ public class MarathonDiscoveryClient implements DiscoveryClient {
                             .allMatch(HealthCheckResult::isAlive)
                     )
                     .map(task -> new DefaultServiceInstance(
-                            task.getAppId(),
+                            ServiceIdConverter.convertToServiceId(task.getAppId()),
                             task.getHost(),
                             task.getPorts().stream().findFirst().orElse(0),
                             false
@@ -77,6 +78,7 @@ public class MarathonDiscoveryClient implements DiscoveryClient {
                     .getApps()
                     .parallelStream()
                     .map(App::getId)
+                    .map(ServiceIdConverter::convertToServiceId)
                     .collect(Collectors.toList());
         } catch (MarathonException e) {
             log.error(e.getMessage(), e);

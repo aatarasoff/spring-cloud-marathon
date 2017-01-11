@@ -41,7 +41,7 @@ public class MarathonServerListTests {
 
         GetAppResponse appResponse = new GetAppResponse();
 
-        when(marathonClient.getApp("service1"))
+        when(marathonClient.getApp("/service1"))
                 .thenReturn(appResponse);
 
         App app = new App();

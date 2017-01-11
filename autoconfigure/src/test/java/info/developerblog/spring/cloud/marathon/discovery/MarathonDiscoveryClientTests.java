@@ -88,13 +88,13 @@ public class MarathonDiscoveryClientTests {
     public void test_list_of_instances() throws MarathonException {
         GetAppTasksResponse tasksResponse = new GetAppTasksResponse();
 
-        when(marathonClient.getAppTasks("service1"))
+        when(marathonClient.getAppTasks("/app1"))
                 .thenReturn(tasksResponse);
 
         tasksResponse.setTasks(new ArrayList<>());
 
         Task taskWithNoHealthChecks = new Task();
-        taskWithNoHealthChecks.setAppId("app1");
+        taskWithNoHealthChecks.setAppId("/app1");
         taskWithNoHealthChecks.setHost("host1");
         taskWithNoHealthChecks.setPorts(
                 IntStream.of(9090)
@@ -105,7 +105,7 @@ public class MarathonDiscoveryClientTests {
         tasksResponse.getTasks().add(taskWithNoHealthChecks);
 
         Task taskWithAllGoodHealthChecks = new Task();
-        taskWithAllGoodHealthChecks.setAppId("app1");
+        taskWithAllGoodHealthChecks.setAppId("/app1");
         taskWithAllGoodHealthChecks.setHost("host2");
         taskWithAllGoodHealthChecks.setPorts(
                 IntStream.of(9090, 9091)
@@ -128,7 +128,7 @@ public class MarathonDiscoveryClientTests {
         tasksResponse.getTasks().add(taskWithAllGoodHealthChecks);
 
         Task taskWithOneBadHealthCheck = new Task();
-        taskWithOneBadHealthCheck.setAppId("app1");
+        taskWithOneBadHealthCheck.setAppId("/app1");
         taskWithOneBadHealthCheck.setHost("host3");
         taskWithOneBadHealthCheck.setPorts(
                 IntStream.of(9090)
@@ -155,7 +155,7 @@ public class MarathonDiscoveryClientTests {
                                 false
                             )
                     ).collect(Collectors.toList()),
-                discoveryClient.getInstances("service1"),
+                discoveryClient.getInstances("app1"),
                 ReflectionComparatorMode.LENIENT_ORDER
         );
     }
