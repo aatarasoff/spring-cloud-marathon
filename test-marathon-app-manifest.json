@@ -13,7 +13,7 @@
       "network": "BRIDGE",
       "portMappings": [
         {
-          "containerPort": 8080,
+          "containerPort": 9090,
           "hostPort": 0,
           "protocol": "tcp",
           "labels": {}
