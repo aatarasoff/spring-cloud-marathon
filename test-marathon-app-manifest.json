@@ -1,16 +1,30 @@
 {
   "id": "test-marathon-app",
-  "cpus": 0.5,
-  "mem": 512.0,
-  "instances": 2,
+  "cmd": null,
+  "cpus": 1,
+  "mem": 512,
+  "disk": 0,
+  "instances": 1,
   "container": {
     "type": "DOCKER",
+    "volumes": [],
     "docker": {
       "image": "test-marathon-app",
       "network": "BRIDGE",
       "portMappings": [
-        { "containerPort": 9090, "servicePort": 9090, "protocol": "tcp" }
-      ]
+        {
+          "containerPort": 8080,
+          "hostPort": 0,
+          "protocol": "tcp",
+          "labels": {}
+        }
+      ],
+      "privileged": false,
+      "parameters": [],
+      "forcePullImage": false
     }
+  },
+  "env": {
+    "SPRING_CLOUD_MARATHON_ENABLED": "false"
   }
 }

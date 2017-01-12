@@ -35,7 +35,7 @@ public class SimpleIntegrationTest {
 
     @Test
     public void check_all_instances_is_running() {
-        assertEquals(2, discoveryClient.getInstances("test-marathon-app").size());
+        assertEquals(1, discoveryClient.getInstances("test-marathon-app").size());
     }
 
     @Configuration
