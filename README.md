@@ -91,7 +91,7 @@ There is one specific moment for services notation and their configuration. In M
 /group/path/app
 ```
 
-so symbol `/` is not allowed as a virtual host in Feign or RestTemplate. So we cannot use original service ids as Spring Cloud service id. Instead of `/` in this implementation other separator: `.` is used. That means that service with id: `/group/path/app` has internal representation: `group.path.app`.
+and symbol `/` is not allowed as a virtual host in Feign or RestTemplate. So we cannot use original service id as Spring Cloud service id. Instead of `/` in this implementation other separator: `.` is used. That means that service with id: `/group/path/app` has internal presentation: `group.path.app`.
 
 And you should configure them like:
 ```
