@@ -13,14 +13,37 @@ repositories {
 }
 ```
 
+or for maven:
+```
+<repositories>
+    <repository>
+        <id>jcenter</id>
+        <url>http://jcenter.bintray.com/</url>
+    </repository>
+</repositories>
+```
+
 And add dependency with latest version (or feel free to choose specific)
 ```
 compile 'info.developerblog.spring.cloud:spring-cloud-marathon-starter:+'
 ```
 
+or for maven:
+```
+<dependency>
+    <groupId>org.springframework.cloud</groupId>
+    <artifactId>spring-cloud-marathon-starter</artifactId>
+    <version>0.4.0</version>
+</dependency>
+```
+
+## Motivation
+
+Something will be here
+
 ## Supported patterns
 
-Spring Cloud `DiscoveryClient` implementation (supports Ribbon and Zuul)
+Spring Cloud `DiscoveryClient` implementation (supports Ribbon, Feign and Zuul)
 
 ## Running the example
 
@@ -29,19 +52,9 @@ Build sample application docker image:
 ./gradlew dockerBuild
 ```
 
-Install native docker on Linux or docker-beta on MacOS X or Windows and run `docker-compose`:
+Install native docker on Linux or docker for MacOS X or Windows and run `docker-compose` for local environment deployment with zookeeper, mesos and marathon:
 ```
 docker-compose up -d
-```
-
-Then upload `test-marathon-app-manifest.json` as application manifest:
-```
-curl -XPOST http://localhost:8080/v2/apps?force=true -H "Content-Type: application/json" --data-binary @test-marathon-app-manifest.json -v
-```
-
-and run the example application:
-```
-./gradlew bootRun
 ```
 
 Add following record into your `/etc/hosts` file:
@@ -49,7 +62,17 @@ Add following record into your `/etc/hosts` file:
 127.0.0.1 mesos-slave
 ```
 
-and test application by curl:
+Then upload `test-marathon-app-manifest.json` as application manifest:
+```
+curl -XPOST http://<marathon_host>:8080/v2/apps?force=true -H "Content-Type: application/json" --data-binary @test-marathon-app-manifest.json -v
+```
+
+and run the example application:
+```
+./gradlew bootRun
+```
+
+Now you may test application by curl:
 ```
 curl localhost:9090/instances
 curl localhost:9090/feign
