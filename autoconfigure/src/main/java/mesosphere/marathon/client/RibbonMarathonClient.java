@@ -67,18 +67,18 @@ public class RibbonMarathonClient extends MarathonClient {
                 setMarathonRibbonProperty("ConnectTimeout", connectionTimeout);
                 setMarathonRibbonProperty("ReadTimeout", readTimeout);
 
-                Feign.Builder b = Feign.builder()
+                Feign.Builder builder = Feign.builder()
                         .client(RibbonClient.builder().lbClientFactory(new MarathonLBClientFactory()).build())
                         .encoder(new GsonEncoder(ModelUtils.GSON))
                         .decoder(new GsonDecoder(ModelUtils.GSON))
                         .errorDecoder(new MarathonErrorDecoder());
 
                 if (!StringUtils.isEmpty(username)) {
-                    new BasicAuthRequestInterceptor(username,password);
+                    builder.requestInterceptor(new BasicAuthRequestInterceptor(username,password));
                 }
 
-                b.requestInterceptor(new MarathonHeadersInterceptor());
-                return b.target(Marathon.class, baseEndpoint);
+                builder.requestInterceptor(new MarathonHeadersInterceptor());
+                return builder.target(Marathon.class, baseEndpoint);
             }
         }
 
