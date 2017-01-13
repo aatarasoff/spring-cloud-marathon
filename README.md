@@ -39,7 +39,7 @@ or for maven:
 
 ## Motivation
 
-Mesos and Marathon helps you to orchestrate microservices or other artifacts in distributed systems. In fact Marathon keeps information about current configuration including localtion of service, its healhchecks etc. So, why do we need third-party system that keeps configuration and provides service discovery features? If you don't have any serious reason the answer will be "No".
+Mesos and Marathon helps you to orchestrate microservices or other artifacts in distributed systems. In fact Marathon keeps information about current configuration including localtion of service, its healhchecks etc. So, do we need third-party system that keeps configuration and provides service discovery features? If you don't have any serious reason the answer will be "No".
 
 ## Supported Spring Cloud patterns
 
@@ -91,7 +91,7 @@ There is one specific moment for services notation and their configuration. In M
 /group/path/app
 ```
 
-so symbol `/` is not allowed as a virtual host in Feign or RestTemplate. So we cannot use original service ids as Spring Cloud service id. Instead of `/` in this implementation other separator: `.` is used. That means that service with id: `/group/path/app` has internal representation: `group.path.app`.
+and symbol `/` is not allowed as a virtual host in Feign or RestTemplate. So we cannot use original service id as Spring Cloud service id. Instead of `/` in this implementation other separator: `.` is used. That means that service with id: `/group/path/app` has internal presentation: `group.path.app`.
 
 And you should configure them like:
 ```
