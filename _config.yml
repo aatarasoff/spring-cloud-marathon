@@ -1,0 +1,8 @@
+title: Spring Cloud Marathon
+description: Spring Cloud integration with Mesos and Marathon
+google_analytics: 
+show_downloads: true
+theme: jekyll-theme-minimal
+
+gems:
+  - jekyll-mentions
