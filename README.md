@@ -31,7 +31,7 @@ compile 'info.developerblog.spring.cloud:spring-cloud-marathon-starter:+'
 or for maven:
 ```xml
 <dependency>
-    <groupId>org.springframework.cloud</groupId>
+    <groupId>info.developerblog.spring.cloud</groupId>
     <artifactId>spring-cloud-marathon-starter</artifactId>
     <version>x.y.z</version>
 </dependency>
