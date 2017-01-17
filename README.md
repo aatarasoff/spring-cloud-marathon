@@ -7,14 +7,14 @@ This project helps with integration between [Spring Cloud](http://projects.sprin
 ## How to connect the project
 
 Add `jcenter` repository:
-```
+```groovy
 repositories {
     jcenter()
 }
 ```
 
 or for maven:
-```
+```xml
 <repositories>
     <repository>
         <id>jcenter</id>
@@ -24,12 +24,12 @@ or for maven:
 ```
 
 And add dependency with latest version (or feel free to choose specific)
-```
+```groovy
 compile 'info.developerblog.spring.cloud:spring-cloud-marathon-starter:+'
 ```
 
 or for maven:
-```
+```xml
 <dependency>
     <groupId>org.springframework.cloud</groupId>
     <artifactId>spring-cloud-marathon-starter</artifactId>
@@ -55,13 +55,13 @@ All configuration should be provided in `bootstrap.yml`
 
 ### Development mode (without Marathon)
 
-```
+```yml
 spring.cloud.marathon.enabled: false
 ```
 
 ### Standalone mode (single-host Marathon)
 
-```
+```yml
 spring:
     cloud:
         marathon:
@@ -72,7 +72,7 @@ spring:
 
 ### Production mode
 
-```
+```yml
 spring:
     cloud:
         marathon:
@@ -94,7 +94,7 @@ There is one specific moment for services notation and their configuration. In M
 and symbol `/` is not allowed as a virtual host in Feign or RestTemplate. So we cannot use original service id as Spring Cloud service id. Instead of `/` in this implementation other separator: `.` is used. That means that service with id: `/group/path/app` has internal presentation: `group.path.app`.
 
 And you should configure them like:
-```
+```yml
 group.path.app:
     ribbon:
         <your settings are here>
@@ -103,32 +103,32 @@ group.path.app:
 ## Running the example
 
 Build sample application docker image:
-```
+```bash
 ./gradlew dockerBuild
 ```
 
 Install native docker on Linux or docker for MacOS X or Windows and run `docker-compose` for local environment deployment with zookeeper, mesos and marathon:
-```
+```bash
 docker-compose up -d
 ```
 
 Add following record into your `/etc/hosts` file:
-```
+```bash
 127.0.0.1 mesos-slave
 ```
 
 Then upload `test-marathon-app-manifest.json` as application manifest:
-```
+```bash
 curl -XPOST http://<marathon_host>:8080/v2/apps?force=true -H "Content-Type: application/json" --data-binary @test-marathon-app-manifest.json -v
 ```
 
 and run the example application:
-```
+```bash
 ./gradlew bootRun
 ```
 
 Now you may test application by curl:
-```
+```bash
 curl localhost:9090/instances
 curl localhost:9090/feign
 ```
