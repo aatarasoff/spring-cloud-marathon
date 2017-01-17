@@ -33,7 +33,7 @@ or for maven:
 <dependency>
     <groupId>org.springframework.cloud</groupId>
     <artifactId>spring-cloud-marathon-starter</artifactId>
-    <version>0.4.0</version>
+    <version>x.y.z</version>
 </dependency>
 ```
 
