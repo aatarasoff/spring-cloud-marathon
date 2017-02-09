@@ -12,11 +12,6 @@ import java.util.stream.Collectors;
 public class MarathonServiceHealthCheckFilter implements ServerListFilter<Server> {
     @Override
     public List<Server> getFilteredListOfServers(List<Server> servers) {
-        return servers
-                .stream()
-                .filter(server ->
-                        server instanceof MarathonServer &&
-                                ((MarathonServer)server).isHealthChecksPassing()
-                ).collect(Collectors.toList());
+        return servers.stream().filter(Server::isAlive).collect(Collectors.toList());
     }
 }

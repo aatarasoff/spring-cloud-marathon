@@ -14,7 +14,7 @@ import static org.junit.Assert.assertTrue;
 public class MarathonPingTests {
     @Test
     public void test_marathon_server() {
-        assertTrue(new MarathonPing()
+        assertTrue(new MarathonPing(properties.isSseEnabled(), sseUpdater)
                 .isAlive(
                         new MarathonServer("host", 9090, Collections.emptyList())
                 )
@@ -23,6 +23,6 @@ public class MarathonPingTests {
 
     @Test
     public void test_not_marathon_server() {
-        assertFalse(new MarathonPing().isAlive(new Server("host:9090")));
+        assertFalse(new MarathonPing(properties.isSseEnabled(), sseUpdater).isAlive(new Server("host:9090")));
     }
 }

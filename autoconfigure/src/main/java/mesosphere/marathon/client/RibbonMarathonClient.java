@@ -13,6 +13,7 @@ import feign.ribbon.LBClientFactory;
 import feign.ribbon.RibbonClient;
 import mesosphere.marathon.client.utils.ModelUtils;
 import org.springframework.util.StringUtils;
+import rx.Observable;
 
 /**
  * Created by aleksandr on 11.01.17.
@@ -61,11 +62,7 @@ public class RibbonMarathonClient extends MarathonClient {
                     return getInstanceWithBasicAuth(baseEndpoint, username, password);
                 }
             } else {
-                setMarathonRibbonProperty("listOfServers", listOfServers);
-                setMarathonRibbonProperty("OkToRetryOnAllOperations", Boolean.TRUE.toString());
-                setMarathonRibbonProperty("MaxAutoRetriesNextServer", maxRetryCount);
-                setMarathonRibbonProperty("ConnectTimeout", connectionTimeout);
-                setMarathonRibbonProperty("ReadTimeout", readTimeout);
+                setupRibbon();
 
                 Feign.Builder builder = Feign.builder()
                         .client(RibbonClient.builder().lbClientFactory(new MarathonLBClientFactory()).build())
@@ -82,7 +79,23 @@ public class RibbonMarathonClient extends MarathonClient {
             }
         }
 
-        void setMarathonRibbonProperty(String suffix, Object value) {
+//        public Observable buildSSE() {
+//            if (null == listOfServers) {
+//
+//            } else {
+//
+//            }
+//        }
+
+        private void setupRibbon() {
+            setMarathonRibbonProperty("listOfServers", listOfServers);
+            setMarathonRibbonProperty("OkToRetryOnAllOperations", Boolean.TRUE.toString());
+            setMarathonRibbonProperty("MaxAutoRetriesNextServer", maxRetryCount);
+            setMarathonRibbonProperty("ConnectTimeout", connectionTimeout);
+            setMarathonRibbonProperty("ReadTimeout", readTimeout);
+        }
+
+        private void setMarathonRibbonProperty(String suffix, Object value) {
             ConfigurationManager.getConfigInstance().setProperty(MARATHON_SERVICE_ID_RIBBON_PREFIX + suffix, value);
         }
     }

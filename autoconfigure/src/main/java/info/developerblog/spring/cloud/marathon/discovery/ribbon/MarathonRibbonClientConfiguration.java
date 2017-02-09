@@ -6,6 +6,7 @@ import info.developerblog.spring.cloud.marathon.discovery.MarathonDiscoveryPrope
 import mesosphere.marathon.client.Marathon;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -17,13 +18,21 @@ public class MarathonRibbonClientConfiguration {
     @Autowired
     private Marathon client;
 
+    @Autowired
+    private MarathonDiscoveryProperties properties;
+
     public MarathonRibbonClientConfiguration() {
     }
 
     @Bean
+    public MarathonSSEUpdater sseUpdater() {
+        return new MarathonSSEUpdater();
+    }
+
+    @Bean
     @ConditionalOnMissingBean
-    public ServerList<?> ribbonServerList(IClientConfig config, MarathonDiscoveryProperties properties) {
-        MarathonServerList serverList = new MarathonServerList(client, properties);
+    public ServerList<?> ribbonServerList(IClientConfig config) {
+        MarathonServerList serverList = new MarathonServerList(client);
         serverList.initWithNiwsConfig(config);
         return serverList;
     }
@@ -35,7 +44,7 @@ public class MarathonRibbonClientConfiguration {
 
     @Bean
     @ConditionalOnMissingBean
-    public IPing ribbonPing() {
-        return new MarathonPing();
+    public IPing ribbonPing(MarathonDiscoveryProperties properties, MarathonSSEUpdater sseUpdater) {
+        return new MarathonPing(properties.isSseEnabled(), sseUpdater);
     }
 }

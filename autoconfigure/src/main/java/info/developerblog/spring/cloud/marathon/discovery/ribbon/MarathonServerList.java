@@ -23,13 +23,11 @@ import java.util.stream.Collectors;
 @Slf4j
 public class MarathonServerList extends AbstractServerList<MarathonServer> {
     private Marathon client;
-    private MarathonDiscoveryProperties properties;
 
     private String serviceId;
 
-    public MarathonServerList(Marathon client, MarathonDiscoveryProperties properties) {
+    public MarathonServerList(Marathon client) {
         this.client = client;
-        this.properties = properties;
     }
 
     @Override
@@ -47,7 +45,7 @@ public class MarathonServerList extends AbstractServerList<MarathonServer> {
         return getServers();
     }
 
-    private List<MarathonServer> getServers() {
+    List<MarathonServer> getServers() {
         if (this.client == null) {
             return Collections.emptyList();
         }
@@ -63,11 +61,15 @@ public class MarathonServerList extends AbstractServerList<MarathonServer> {
                                     ? task.getHealthCheckResults()
                                     : new ArrayList<>();
 
-                        return new MarathonServer(
+                        MarathonServer server = new MarathonServer(
                                 task.getHost(),
-                                task.getPorts().stream().findFirst().orElse(0),
-                                healthChecks
+                                task.getPorts().stream().findFirst().orElse(0)
                         );
+
+                        server.setAlive(healthChecks.parallelStream().allMatch(HealthCheckResult::isAlive));
+                        server.withMetaInfo(new MarathonServer.MarathonMetaInfo(task.getId()));
+
+                        return server;
                     })
                     .collect(Collectors.toList());
         } catch (MarathonException e) {

@@ -1,3 +1,9 @@
+ribbon:
+  ServerListRefreshInterval: 60000
+
 spring:
   application:
     name: test-marathon-app
+
+  cloud.marathon.host: localhost
+  cloud.marathon.discovery.sseEnabled: true

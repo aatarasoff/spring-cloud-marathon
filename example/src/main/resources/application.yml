@@ -1,9 +1,6 @@
 server:
   port: 9090
 
-ribbon:
-  ServerListRefreshInterval: 1000
-
 endpoints:
   health:
     sensitive: false
