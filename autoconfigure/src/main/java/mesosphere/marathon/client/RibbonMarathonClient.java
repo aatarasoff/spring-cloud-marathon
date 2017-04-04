@@ -11,6 +11,7 @@ import feign.gson.GsonEncoder;
 import feign.ribbon.LBClient;
 import feign.ribbon.LBClientFactory;
 import feign.ribbon.RibbonClient;
+import mesosphere.marathon.client.auth.TokenAuthRequestInterceptor;
 import mesosphere.marathon.client.utils.ModelUtils;
 import org.springframework.util.StringUtils;
 
@@ -27,6 +28,7 @@ public class RibbonMarathonClient extends MarathonClient {
         private String baseEndpoint;
 
         private String listOfServers;
+        private String token;
         private String username;
         private String password;
 
@@ -43,6 +45,11 @@ public class RibbonMarathonClient extends MarathonClient {
             return this;
         }
 
+        public Builder withToken(String token){
+            this.token = token;
+            return this;
+        }
+
         public Builder withUsername(String username) {
             this.username = username;
             return this;
@@ -55,10 +62,12 @@ public class RibbonMarathonClient extends MarathonClient {
 
         public Marathon build() {
             if (null == listOfServers) {
-                if (StringUtils.isEmpty(username)) {
-                    return getInstance(baseEndpoint);
-                } else {
+                if (!StringUtils.isEmpty(token)) {
+                    return getInstanceWithTokenAuth(baseEndpoint,token);
+                } else if (!StringUtils.isEmpty(username)) {
                     return getInstanceWithBasicAuth(baseEndpoint, username, password);
+                } else {
+                    return getInstance(baseEndpoint);
                 }
             } else {
                 setMarathonRibbonProperty("listOfServers", listOfServers);
@@ -73,11 +82,15 @@ public class RibbonMarathonClient extends MarathonClient {
                         .decoder(new GsonDecoder(ModelUtils.GSON))
                         .errorDecoder(new MarathonErrorDecoder());
 
-                if (!StringUtils.isEmpty(username)) {
+                if (!StringUtils.isEmpty(token)) {
+                    builder.requestInterceptor(new TokenAuthRequestInterceptor(token));
+                }
+                else if (!StringUtils.isEmpty(username)) {
                     builder.requestInterceptor(new BasicAuthRequestInterceptor(username,password));
                 }
 
                 builder.requestInterceptor(new MarathonHeadersInterceptor());
+
                 return builder.target(Marathon.class, baseEndpoint);
             }
         }

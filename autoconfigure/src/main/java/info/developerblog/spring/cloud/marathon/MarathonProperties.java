@@ -24,6 +24,8 @@ public class MarathonProperties {
 
     private String listOfServers = null;
 
+    private String token = null;
+
     private String username = null;
 
     private String password = null;
