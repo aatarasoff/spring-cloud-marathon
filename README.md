@@ -78,6 +78,7 @@ spring:
         marathon:
             endpoint: http://marathon                    #this overrides host and port options
             listOfServers: m1:8080,m2:8080,m3:8080       #list of marathon masters
+            token: <dcos_acs_token>                      #DC/OS HTTP API Token (optional)
             username: marathon                           #username for basic auth (optional)
             password: mesos                              #password for basic auth (optional)
 ```
