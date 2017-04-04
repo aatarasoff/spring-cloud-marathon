@@ -30,6 +30,7 @@ public class MarathonAutoConfiguration {
     public Marathon marathonClient(MarathonProperties properties) {
         return new RibbonMarathonClient.Builder(properties.getEndpoint())
                 .withListOfServers(properties.getListOfServers())
+                .withToken(properties.getToken())
                 .withUsername(properties.getUsername())
                 .withPassword(properties.getPassword())
                 .build();
