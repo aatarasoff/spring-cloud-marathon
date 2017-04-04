@@ -6,17 +6,10 @@ import mesosphere.marathon.client.Marathon;
 import mesosphere.marathon.client.model.v2.App;
 import mesosphere.marathon.client.model.v2.HealthCheckResult;
 import mesosphere.marathon.client.utils.MarathonException;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.cloud.client.DefaultServiceInstance;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
-import org.springframework.cloud.commons.util.InetUtils;
-import org.springframework.context.ApplicationContext;
-import org.springframework.core.env.Environment;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -50,8 +43,11 @@ public class MarathonDiscoveryClient implements DiscoveryClient {
     @Override
     public List<ServiceInstance> getInstances(String serviceId) {
         try {
-            return client.getAppTasks(ServiceIdConverter.convertToMarathonId(serviceId))
-                    .getTasks()
+
+            App app = client.getApp(ServiceIdConverter.convertToMarathonId(serviceId)).getApp();
+            if (app==null || app.getTasks()==null || app.getTasks().isEmpty()) return Collections.emptyList();
+
+            List<ServiceInstance> instances = app.getTasks()
                     .parallelStream()
                     .filter(task -> null == task.getHealthCheckResults() ||
                             task.getHealthCheckResults()
@@ -65,6 +61,12 @@ public class MarathonDiscoveryClient implements DiscoveryClient {
                             false
                     ))
                     .collect(Collectors.toList());
+
+            if (app.getLabels()!=null)
+                instances.parallelStream().forEach(serviceInstance -> serviceInstance.getMetadata().putAll(app.getLabels()));
+
+            return instances;
+
         } catch (MarathonException e) {
             log.error(e.getMessage(), e);
             return Collections.emptyList();

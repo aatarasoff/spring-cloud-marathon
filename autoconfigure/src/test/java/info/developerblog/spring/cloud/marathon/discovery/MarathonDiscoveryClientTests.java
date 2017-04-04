@@ -86,12 +86,13 @@ public class MarathonDiscoveryClientTests {
 
     @Test
     public void test_list_of_instances() throws MarathonException {
-        GetAppTasksResponse tasksResponse = new GetAppTasksResponse();
+        GetAppResponse appResponse = new GetAppResponse();
 
-        when(marathonClient.getAppTasks("/app1"))
-                .thenReturn(tasksResponse);
+        when(marathonClient.getApp("/app1"))
+                .thenReturn(appResponse);
 
-        tasksResponse.setTasks(new ArrayList<>());
+        appResponse.setApp(new App());
+        appResponse.getApp().setTasks(new ArrayList<>());
 
         Task taskWithNoHealthChecks = new Task();
         taskWithNoHealthChecks.setAppId("/app1");
@@ -102,7 +103,7 @@ public class MarathonDiscoveryClientTests {
                 .collect(Collectors.toList())
         );
 
-        tasksResponse.getTasks().add(taskWithNoHealthChecks);
+        appResponse.getApp().getTasks().add(taskWithNoHealthChecks);
 
         Task taskWithAllGoodHealthChecks = new Task();
         taskWithAllGoodHealthChecks.setAppId("/app1");
@@ -125,7 +126,7 @@ public class MarathonDiscoveryClientTests {
 
         taskWithAllGoodHealthChecks.setHealthCheckResults(healthCheckResults);
 
-        tasksResponse.getTasks().add(taskWithAllGoodHealthChecks);
+        appResponse.getApp().getTasks().add(taskWithAllGoodHealthChecks);
 
         Task taskWithOneBadHealthCheck = new Task();
         taskWithOneBadHealthCheck.setAppId("/app1");
@@ -142,7 +143,7 @@ public class MarathonDiscoveryClientTests {
 
         taskWithOneBadHealthCheck.setHealthCheckResults(withBadHealthCheckResults);
 
-        tasksResponse.getTasks().add(taskWithOneBadHealthCheck);
+        appResponse.getApp().getTasks().add(taskWithOneBadHealthCheck);
 
         ReflectionAssert.assertReflectionEquals(
                 "should be two tasks",
