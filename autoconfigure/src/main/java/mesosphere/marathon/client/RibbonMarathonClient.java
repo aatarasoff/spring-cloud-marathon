@@ -5,7 +5,6 @@ import com.netflix.client.DefaultLoadBalancerRetryHandler;
 import com.netflix.client.config.IClientConfig;
 import com.netflix.config.ConfigurationManager;
 import feign.Feign;
-import feign.Logger;
 import feign.auth.BasicAuthRequestInterceptor;
 import feign.gson.GsonDecoder;
 import feign.gson.GsonEncoder;
@@ -81,7 +80,7 @@ public class RibbonMarathonClient extends MarathonClient {
                         .client(RibbonClient.builder().lbClientFactory(new MarathonLBClientFactory()).build())
                         .encoder(new GsonEncoder(ModelUtils.GSON))
                         .decoder(new GsonDecoder(ModelUtils.GSON))
-                        .errorDecoder(new MarathonErrorDecoder()).logLevel(Logger.Level.FULL);
+                        .errorDecoder(new MarathonErrorDecoder());
 
                 if (!StringUtils.isEmpty(token)) {
                     builder.requestInterceptor(new TokenAuthRequestInterceptor(token));
