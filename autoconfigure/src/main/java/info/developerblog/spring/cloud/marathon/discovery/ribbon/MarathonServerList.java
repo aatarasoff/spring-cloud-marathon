@@ -7,7 +7,6 @@ import info.developerblog.spring.cloud.marathon.utils.ServiceIdConverter;
 import lombok.extern.slf4j.Slf4j;
 import mesosphere.marathon.client.Marathon;
 import mesosphere.marathon.client.model.v2.App;
-import mesosphere.marathon.client.model.v2.HealthCheck;
 import mesosphere.marathon.client.model.v2.HealthCheckResult;
 import mesosphere.marathon.client.utils.MarathonException;
 

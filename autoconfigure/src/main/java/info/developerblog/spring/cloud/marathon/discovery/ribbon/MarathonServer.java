@@ -1,6 +1,5 @@
 package info.developerblog.spring.cloud.marathon.discovery.ribbon;
 
-import com.netflix.loadbalancer.PingUrl;
 import com.netflix.loadbalancer.Server;
 import mesosphere.marathon.client.model.v2.HealthCheckResult;
 
