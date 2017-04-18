@@ -101,6 +101,59 @@ group.path.app:
         <your settings are here>
 ```
 
+If a specific service cannot be located by the id, then a second lookup is performed for services that contain the given id. e.g.
+A service has been deployed using three different Marathon service ids:
+```
+/group1/path/app
+/group2/path/app
+/group3/path/app
+```
+A client is configured for the service name only, excluding the group & path from the id:
+```yml
+app:
+    ribbon:
+        <your settings are here>
+```
+Service Tasks for all three services will be discovered & used by ribbon.
+
+Sometimes it is useful discover services that are advertising a specific capability; by API version for example:
+Three versions of a service have been deployed, with the following Marathon service ids and labels:
+```
+/group1/path/app  "labels":{ "API_VERSION" : "V1" }
+/group2/path/app  "labels":{ "API_VERSION" : "V2" }
+/group3/path/app  "labels":{ "API_VERSION" : "V2" }
+```
+A client is configured to expect the "V2" API Version:
+```yml
+app:
+    ribbon:
+        <your settings are here>
+        MetaDataFilter:
+            API_VERSION: V2
+```
+Only service instances that contain "app" in the service id and have matching labels will be discovered & used by ribbon.
+
+Where multiple values are specified for MetaDataFilter, all values must match service labels before ribbon will use the service instance:
+```yml
+app:
+    ribbon:
+        <your settings are here>
+        MetaDataFilter:
+            API_VERSION: V2
+            ENVIRONMENT: UAT
+            APPLICATION_OWNER: fred.bloggs@company.com
+```
+
+Combining the loose service id matching with service label filtering permits us to get creative with service discovery:
+```yml
+group.path:
+    ribbon:
+        <your settings are here>
+        MetaDataFilter:
+            CUSTOMER_ENTITY: V1
+```
+i.e. select any service deployed to /group/path that supports Version 1 of the Customer Entity
+
 ## Running the example
 
 Build sample application docker image:
