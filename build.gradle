@@ -22,6 +22,8 @@ allprojects {
 
     repositories {
         jcenter()
+        mavenLocal()
+        mavenCentral()
         maven {
             url "https://downloads.mesosphere.com/maven/"
         }
@@ -40,7 +42,7 @@ allprojects {
 
         dependencies {
             dependency 'org.projectlombok:lombok:1.16.8'
-            dependency 'com.mesosphere:marathon-client:0.3.0'
+            dependency 'com.mesosphere:marathon-client:0.3.1-SNAPSHOT'
             dependency 'com.netflix.feign:feign-ribbon:8.14.1'
             dependency 'org.mockito:mockito-all:1.10.19'
             dependency 'org.unitils:unitils-core:3.4.2'

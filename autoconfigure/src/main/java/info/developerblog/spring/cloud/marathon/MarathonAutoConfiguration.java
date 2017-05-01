@@ -2,8 +2,8 @@ package info.developerblog.spring.cloud.marathon;
 
 import info.developerblog.spring.cloud.marathon.actuator.MarathonEndpoint;
 import info.developerblog.spring.cloud.marathon.actuator.MarathonHealthIndicator;
+import mesosphere.dcos.client.RibbonDCOSClient;
 import mesosphere.marathon.client.Marathon;
-import mesosphere.marathon.client.MarathonClient;
 import mesosphere.marathon.client.RibbonMarathonClient;
 import org.springframework.boot.actuate.endpoint.Endpoint;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
@@ -28,12 +28,25 @@ public class MarathonAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public Marathon marathonClient(MarathonProperties properties) {
-        return new RibbonMarathonClient.Builder(properties.getEndpoint())
-                .withListOfServers(properties.getListOfServers())
-                .withToken(properties.getToken())
-                .withUsername(properties.getUsername())
-                .withPassword(properties.getPassword())
-                .build();
+
+        if (properties.isDcosAuthentication()) {
+
+            return new RibbonDCOSClient.Builder(properties.getEndpoint())
+                    .withListOfServers(properties.getListOfServers())
+                    .withUsername(properties.getUsername())
+                    .withPassword(properties.getPassword())
+                    .withPrivateKey(properties.getPrivateKey())
+                    .build();
+
+        } else {
+
+            return new RibbonMarathonClient.Builder(properties.getEndpoint())
+                    .withListOfServers(properties.getListOfServers())
+                    .withToken(properties.getToken())
+                    .withUsername(properties.getUsername())
+                    .withPassword(properties.getPassword())
+                    .build();
+        }
     }
 
     @Configuration

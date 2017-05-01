@@ -30,6 +30,10 @@ public class MarathonProperties {
 
     private String password = null;
 
+    private String privateKey = null;
+
+    private boolean dcosAuthentication = false;
+
     private boolean enabled = true;
 
     public String getEndpoint() {
