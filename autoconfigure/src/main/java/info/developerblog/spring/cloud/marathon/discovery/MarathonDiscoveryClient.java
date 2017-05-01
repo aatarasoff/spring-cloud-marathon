@@ -2,6 +2,7 @@ package info.developerblog.spring.cloud.marathon.discovery;
 
 import info.developerblog.spring.cloud.marathon.utils.ServiceIdConverter;
 import lombok.extern.slf4j.Slf4j;
+import mesosphere.dcos.client.DCOSException;
 import mesosphere.marathon.client.Marathon;
 import mesosphere.marathon.client.model.v2.*;
 import mesosphere.marathon.client.MarathonException;
@@ -55,6 +56,7 @@ public class MarathonDiscoveryClient implements DiscoveryClient {
                     instances.addAll(extractServiceInstances(response.getApp()));
 
             } catch (MarathonException e){
+            } catch (DCOSException e){
             }
 
             if (instances.size()==0) {
@@ -87,7 +89,7 @@ public class MarathonDiscoveryClient implements DiscoveryClient {
             log.debug("Discovered " + instances.size() + " service instance" + ((instances.size() == 1) ? "" : "s") + " for service id [" + serviceId + "]");
             return instances;
 
-        } catch (MarathonException e) {
+        } catch (Exception e) {
             log.error(e.getMessage(), e);
             return Collections.emptyList();
         }

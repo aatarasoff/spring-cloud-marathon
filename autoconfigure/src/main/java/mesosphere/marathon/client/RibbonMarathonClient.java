@@ -20,6 +20,7 @@ import org.springframework.util.StringUtils;
  */
 public class RibbonMarathonClient extends MarathonClient {
     static final String MARATHON_SERVICE_ID_RIBBON_PREFIX = "marathon.ribbon.";
+    static final String DEFAULT_MARATHON_ENDPOINT = "http://marathon";
     static final int DEFAULT_MARATHON_SERVICE_RETRY_COUNT = 3;
     static final int DEFAULT_MARATHON_SERVICE_CONNECTION_TIMEOUT = 1000;
     static final int DEFAULT_MARATHON_SERVICE_READ_TIMEOUT = 5000;
@@ -63,7 +64,7 @@ public class RibbonMarathonClient extends MarathonClient {
         public Marathon build() {
             if (null == listOfServers) {
                 if (!StringUtils.isEmpty(token)) {
-                    return getInstanceWithTokenAuth(baseEndpoint,token);
+                    return getInstanceWithTokenAuth(baseEndpoint, token);
                 } else if (!StringUtils.isEmpty(username)) {
                     return getInstanceWithBasicAuth(baseEndpoint, username, password);
                 } else {
@@ -91,7 +92,7 @@ public class RibbonMarathonClient extends MarathonClient {
 
                 builder.requestInterceptor(new MarathonHeadersInterceptor());
 
-                return builder.target(Marathon.class, baseEndpoint);
+                return builder.target(Marathon.class, DEFAULT_MARATHON_ENDPOINT);
             }
         }
 
@@ -110,4 +111,7 @@ public class RibbonMarathonClient extends MarathonClient {
             return client;
         }
     }
+
+
+
 }

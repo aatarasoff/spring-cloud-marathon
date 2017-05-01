@@ -5,6 +5,7 @@ import com.netflix.loadbalancer.AbstractServerList;
 import info.developerblog.spring.cloud.marathon.discovery.MarathonDiscoveryProperties;
 import info.developerblog.spring.cloud.marathon.utils.ServiceIdConverter;
 import lombok.extern.slf4j.Slf4j;
+import mesosphere.dcos.client.DCOSException;
 import mesosphere.marathon.client.Marathon;
 import mesosphere.marathon.client.model.v2.*;
 import mesosphere.marathon.client.MarathonException;
@@ -65,6 +66,7 @@ public class MarathonServerList extends AbstractServerList<MarathonServer> {
                     instances.addAll(extractServiceInstances(response.getApp()));
 
             } catch (MarathonException e) {
+            } catch (DCOSException e){
             }
 
             if (instances.size()==0) {
@@ -96,7 +98,7 @@ public class MarathonServerList extends AbstractServerList<MarathonServer> {
             return instances;
 
 
-        } catch (MarathonException e) {
+        } catch (Exception e) {
             log.error(e.getMessage(), e);
             return Collections.emptyList();
         }
