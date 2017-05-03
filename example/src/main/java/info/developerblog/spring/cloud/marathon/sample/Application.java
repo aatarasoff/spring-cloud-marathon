@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -33,12 +34,13 @@ import java.util.List;
  */
 @Configuration
 @EnableAutoConfiguration
-@EnableDiscoveryClient
 @RestController
 @EnableConfigurationProperties
 @EnableFeignClients
 @EnableZuulProxy
 @Slf4j
+@SpringBootApplication
+@EnableDiscoveryClient
 public class Application {
     @Autowired
     private LoadBalancerClient loadBalancer;

@@ -1,13 +1,9 @@
 package info.developerblog.spring.cloud.marathon.discovery.ribbon;
 
-import com.netflix.client.config.CommonClientConfigKey;
 import com.netflix.client.config.IClientConfig;
-import com.netflix.client.config.IClientConfigKey;
 import com.netflix.loadbalancer.Server;
-import mesosphere.marathon.client.model.v2.HealthCheckResults;
-import org.apache.commons.collections.map.HashedMap;
+import mesosphere.marathon.client.model.v2.HealthCheckResult;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -54,14 +50,14 @@ public class MarathonServiceHealthCheckFilterTests {
         metaDataFilter2.put("ENVIRONMENT","QA");
         metaDataFilter2.put("APP_VERSION","V2");
 
-        List<HealthCheckResults> passingHealthChecks = new ArrayList<>();
-        List<HealthCheckResults> failingHealthChecks = new ArrayList<>();
+        List<HealthCheckResult> passingHealthChecks = new ArrayList<>();
+        List<HealthCheckResult> failingHealthChecks = new ArrayList<>();
 
-        HealthCheckResults passingResults = new HealthCheckResults();
+        HealthCheckResult passingResults = new HealthCheckResult();
         passingResults.setAlive(true);
         passingHealthChecks.add(passingResults);
 
-        HealthCheckResults failingResults = new HealthCheckResults();
+        HealthCheckResult failingResults = new HealthCheckResult();
         failingResults.setAlive(false);
         failingHealthChecks.add(failingResults);
 

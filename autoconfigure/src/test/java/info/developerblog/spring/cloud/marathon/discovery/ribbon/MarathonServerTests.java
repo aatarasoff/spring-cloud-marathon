@@ -1,7 +1,6 @@
 package info.developerblog.spring.cloud.marathon.discovery.ribbon;
 
 import mesosphere.marathon.client.model.v2.HealthCheckResult;
-import mesosphere.marathon.client.model.v2.HealthCheckResults;
 import org.junit.Test;
 
 import java.util.Collection;
@@ -24,10 +23,10 @@ public class MarathonServerTests {
 
     @Test
     public void test_with_all_good_healthchecks() {
-        Collection<HealthCheckResults> healthChecks =
+        Collection<HealthCheckResult> healthChecks =
                 IntStream.rangeClosed(1,10)
                     .mapToObj(index -> {
-                        HealthCheckResults healthCheck = new HealthCheckResults();
+                        HealthCheckResult healthCheck = new HealthCheckResult();
                         healthCheck.setAlive(true);
                         return healthCheck;
                     }).collect(Collectors.toList());
@@ -37,10 +36,10 @@ public class MarathonServerTests {
 
     @Test
     public void test_with_bad_healthchecks() {
-        Collection<HealthCheckResults> healthChecks =
+        Collection<HealthCheckResult> healthChecks =
                 IntStream.rangeClosed(1,2)
                         .mapToObj(index -> {
-                            HealthCheckResults healthCheck = new HealthCheckResults();
+                            HealthCheckResult healthCheck = new HealthCheckResult();
                             healthCheck.setAlive(false);
                             return healthCheck;
                         }).collect(Collectors.toList());

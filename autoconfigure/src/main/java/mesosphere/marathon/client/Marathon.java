@@ -19,6 +19,7 @@ import mesosphere.marathon.client.model.v2.GetTasksResponse;
 import mesosphere.marathon.client.model.v2.Group;
 import mesosphere.marathon.client.model.v2.QueueResponse;
 import mesosphere.marathon.client.model.v2.Result;
+import mesosphere.marathon.client.utils.MarathonException;
 
 import feign.Param;
 import feign.RequestLine;

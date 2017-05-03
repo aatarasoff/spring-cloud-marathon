@@ -2,10 +2,9 @@ package info.developerblog.spring.cloud.marathon.discovery;
 
 import info.developerblog.spring.cloud.marathon.utils.ServiceIdConverter;
 import lombok.extern.slf4j.Slf4j;
-import mesosphere.dcos.client.DCOSException;
 import mesosphere.marathon.client.Marathon;
 import mesosphere.marathon.client.model.v2.*;
-import mesosphere.marathon.client.MarathonException;
+import mesosphere.marathon.client.utils.MarathonException;
 import org.springframework.cloud.client.DefaultServiceInstance;
 import org.springframework.cloud.client.ServiceInstance;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
@@ -56,7 +55,7 @@ public class MarathonDiscoveryClient implements DiscoveryClient {
                     instances.addAll(extractServiceInstances(response.getApp()));
 
             } catch (MarathonException e){
-            } catch (DCOSException e){
+                log.error(e.getMessage(), e);
             }
 
             if (instances.size()==0) {
@@ -115,7 +114,7 @@ public class MarathonDiscoveryClient implements DiscoveryClient {
                 .filter(task -> null == task.getHealthCheckResults() ||
                         task.getHealthCheckResults()
                                 .stream()
-                                .allMatch(HealthCheckResults::getAlive)
+                                .allMatch(HealthCheckResult::isAlive)
                 )
                 .map(task -> new DefaultServiceInstance(
                         ServiceIdConverter.convertToServiceId(task.getAppId()),

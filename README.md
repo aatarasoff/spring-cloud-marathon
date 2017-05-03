@@ -94,30 +94,6 @@ spring:
             password: mesos                              #password for basic auth (optional)
 ```
 
-Authentication via DC/OS, providing a list of DC/OS masters:
-```yml
-spring:
-    cloud:
-        marathon:
-            dcosAuthentication: true                     #authenticate via DCOS (default is "false" i.e. authenticate via marathon)
-            listOfServers: m1,m2,m3                      #list of DC/OS masters
-            privateKey: <PEM Private Key>                #DC/OS Private Key; PKCS8, PEM, no password (optional; use endpoint/listOfServers for DC/OS)
-            username: dcos_user                          #username for DC/OS user account
-            password: myPassword                         #password for DC/OS user account (optional; if priveKey not specified)
-```
-
-or, provide a load balanced DC/OS endpoint:
-```yml
-spring:
-    cloud:
-        marathon:
-            dcosAuthentication: true                     #authenticate via DCOS (default is "false" i.e. authenticate via marathon)
-            endpoint: http://dcos.local                  #override scheme+host+port
-            privateKey: <PEM Private Key>                #DC/OS Private Key; PKCS8, PEM, no password (optional; use endpoint/listOfServers for DC/OS)
-            username: dcos_user                          #username for DC/OS user account
-            password: myPassword                         #password for DC/OS user account (optional; if priveKey not specified)
-```
-
 Other configuration for services and discovery you can see in [official documentation](http://cloud.spring.io/spring-cloud-static/Camden.SR3/)
 
 ### Authentication
@@ -127,8 +103,6 @@ Spring Cloud Marathon supports four methods of authentication:
 - No Authentication (using Marathon Endpoint)
 - Basic Authentication (using Marathon Endpoint)
 - Token Authentication (using Marathon Endpoint)
-- Service Account Authentication (using DC/OS Endpoint)
-- User Account Authentication (using DC/OS Endpoint)
 
 #### No Authentication
 
@@ -166,79 +140,6 @@ spring:
             listOfServers: m1:8080,m2:8080,m3:8080       #list of marathon masters
             token: <dcos_acs_token>                      #DC/OS HTTP API Token (optional)
 ```
-
-#### DC/OS Service Account Authentication
-
-Provide a username and a private key.  Specify a load balanced endpoint or listOfServers that describe the DC/OS Endpoint. e.g.
-
-```yml
-spring:
-    cloud:
-        marathon:
-            dcosAuthentication: true                     #authenticate via DCOS (default is "false" i.e. authenticate via marathon)
-            listOfServers: m1,m2,m3                      #list of DC/OS masters
-            username: dcos_user                          #username for service account
-            privateKey: <PEM Private Key>                #DC/OS Private Key; PKCS8, PEM, no password
-```
-
-Note that DC/OS presents Marathon API methods under via path <dcosEndpoint>/marathon
-
-This method of authentication will invoke <dcosEndpoint>/acs/api/v1/auth/login to retrieve a HTTP API Token, and will refresh the token when it expires.
-Subsequent requests to marathon for service discovery will automatically adjust the path e.g. <dcosEndpoint>/marathon/v2/apps
-
-It is best practice to hide the value of the private key using DC/OS secrets.  When testing it is possible to declare the private key as a YAML multiline property using the '|' notation. e.g.
-```yml
-spring:
-    cloud:
-        marathon:
-            dcosPrivateKey: |
-                -----BEGIN PRIVATE KEY-----
-                <base64 encoded data here>
-                ...
-                -----END PRIVATE KEY-----
-```
-
-
-The private key must formated as PKCS8/PEM and must not be password protected.
-
-To generate a private key:
-```
-openssl genrsa -des3 -out private.pem 2048
-```
-
-To extract the public key:
-```
-openssl rsa -in private.pem -outform PEM -pubout -out public.pem
-```
-
-To format the private key as PKCS8:
-```
-openssl pkcs8 -in private.pem -topk8 -v2 des3 -out p8.pem
-```
-
-To remove password protection from a PKCS8 private key:
-```
-openssl pkcs8 -topk8 -nocrypt -in p8.pem -outform PEM -out p8open.pem
-```
-
-#### DC/OS User Account Authentication
-
-Provide a username and a password.  Specify a load balanced endpoint or listOfServers that describe the DC/OS Endpoint. e.g.
-
-```yml
-spring:
-    cloud:
-        marathon:
-            dcosAuthentication: true                     #authenticate via DCOS (default is "false" i.e. authenticate via marathon)
-            listOfServers: m1,m2,m3                      #list of DC/OS masters
-            username: dcos_user                          #username for DC/OS user account
-            password: myPassword                         #password for DC/OS user account
-```
-
-Note that DC/OS presents Marathon API methods under via path <dcosEndpoint>/marathon
-
-This method of authentication will invoke <dcosEndpoint>/acs/api/v1/auth/login to retrieve a HTTP API Token, and will refresh the token when it expires.
-Subsequent requests to marathon for service discovery will automatically adjust the path e.g. <dcosEndpoint>/marathon/v2/apps
 
 ### Services configuration
 
