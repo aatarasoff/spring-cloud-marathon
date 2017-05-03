@@ -2,25 +2,28 @@ package info.developerblog.spring.cloud.marathon.discovery.ribbon;
 
 import com.netflix.loadbalancer.Server;
 import mesosphere.marathon.client.model.v2.HealthCheckResult;
-import mesosphere.marathon.client.model.v2.HealthCheckResults;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created by aleksandr on 07.07.16.
  */
 public class MarathonServer extends Server {
 
-    private Collection<HealthCheckResults> healthChecks;
+    private Collection<HealthCheckResult> healthChecks;
     private Map<String,String> metaData;
 
-    public MarathonServer(String host, int port, Collection<HealthCheckResults> healthChecks) {
+    public MarathonServer(String host, int port, Collection<HealthCheckResult> healthChecks) {
         super(host, port);
         this.healthChecks = healthChecks;
         this.metaData = new HashMap<>();
     }
 
-    public MarathonServer(String host, int port, Collection<HealthCheckResults> healthChecks, Map<String,String> metaData) {
+    public MarathonServer(String host, int port, Collection<HealthCheckResult> healthChecks, Map<String,String> metaData) {
         super(host, port);
         this.healthChecks = healthChecks;
         this.metaData = (metaData!=null)?metaData:new HashMap<>();
@@ -28,7 +31,7 @@ public class MarathonServer extends Server {
 
     public boolean isHealthChecksPassing() {
         return healthChecks.parallelStream()
-                .allMatch(HealthCheckResults::getAlive);
+                .allMatch(HealthCheckResult::isAlive);
     }
 
 

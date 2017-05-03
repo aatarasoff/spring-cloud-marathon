@@ -4,7 +4,7 @@ import com.netflix.client.config.IClientConfig;
 import info.developerblog.spring.cloud.marathon.discovery.MarathonDiscoveryProperties;
 import mesosphere.marathon.client.Marathon;
 import mesosphere.marathon.client.model.v2.*;
-import mesosphere.marathon.client.MarathonException;
+import mesosphere.marathon.client.utils.MarathonException;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.reflectionassert.ReflectionAssert;

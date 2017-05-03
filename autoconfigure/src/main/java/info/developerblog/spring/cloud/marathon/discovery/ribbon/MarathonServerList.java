@@ -5,13 +5,19 @@ import com.netflix.loadbalancer.AbstractServerList;
 import info.developerblog.spring.cloud.marathon.discovery.MarathonDiscoveryProperties;
 import info.developerblog.spring.cloud.marathon.utils.ServiceIdConverter;
 import lombok.extern.slf4j.Slf4j;
-import mesosphere.dcos.client.DCOSException;
 import mesosphere.marathon.client.Marathon;
-import mesosphere.marathon.client.model.v2.*;
-import mesosphere.marathon.client.MarathonException;
+import mesosphere.marathon.client.model.v2.App;
+import mesosphere.marathon.client.model.v2.GetAppResponse;
+import mesosphere.marathon.client.model.v2.GetAppsResponse;
+import mesosphere.marathon.client.model.v2.HealthCheckResult;
+import mesosphere.marathon.client.utils.MarathonException;
 
-
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -66,7 +72,7 @@ public class MarathonServerList extends AbstractServerList<MarathonServer> {
                     instances.addAll(extractServiceInstances(response.getApp()));
 
             } catch (MarathonException e) {
-            } catch (DCOSException e){
+                log.error(e.getMessage(), e);
             }
 
             if (instances.size()==0) {
@@ -121,7 +127,7 @@ public class MarathonServerList extends AbstractServerList<MarathonServer> {
         return app.getTasks()
                 .stream()
                 .map(task -> {
-                    Collection<HealthCheckResults> healthChecks =
+                    Collection<HealthCheckResult> healthChecks =
                             null != task.getHealthCheckResults()
                                     ? task.getHealthCheckResults()
                                     : new ArrayList<>();
