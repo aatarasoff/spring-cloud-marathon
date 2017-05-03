@@ -39,7 +39,7 @@ or for maven:
 
 ## Motivation
 
-Mesos and Marathon helps you to orchestrate microservices or other artifacts in distributed systems. In fact Marathon keeps information about current configuration including localtion of service, its healhchecks etc. So, do we need third-party system that keeps configuration and provides service discovery features? If you don't have any serious reason the answer will be "No".
+Mesos and Marathon helps you to orchestrate microservices or other artifacts in distributed systems. In fact Marathon keeps information about current configuration including location of service, its healhchecks etc. So, do we need third-party system that keeps configuration and provides service discovery features? If you don't have any serious reason the answer will be "No".
 
 ## Supported Spring Cloud patterns
 
@@ -72,18 +72,173 @@ spring:
 
 ### Production mode
 
+Authentication via Marathon, providing a list of marathon masters:
 ```yml
 spring:
     cloud:
         marathon:
-            endpoint: http://marathon                    #this overrides host and port options
             listOfServers: m1:8080,m2:8080,m3:8080       #list of marathon masters
             token: <dcos_acs_token>                      #DC/OS HTTP API Token (optional)
             username: marathon                           #username for basic auth (optional)
             password: mesos                              #password for basic auth (optional)
 ```
 
+or, provide a load balanced marathon endpoint:
+```yml
+spring:
+    cloud:
+        marathon:
+            endpoint: http://marathon.local:8080         #override scheme+host+port
+            token: <dcos_acs_token>                      #DC/OS HTTP API Token (optional)
+            username: marathon                           #username for basic auth (optional)
+            password: mesos                              #password for basic auth (optional)
+```
+
+Authentication via DC/OS, providing a list of DC/OS masters:
+```yml
+spring:
+    cloud:
+        marathon:
+            dcosAuthentication: true                     #authenticate via DCOS (default is "false" i.e. authenticate via marathon)
+            listOfServers: m1,m2,m3                      #list of DC/OS masters
+            privateKey: <PEM Private Key>                #DC/OS Private Key; PKCS8, PEM, no password (optional; use endpoint/listOfServers for DC/OS)
+            username: dcos_user                          #username for DC/OS user account
+            password: myPassword                         #password for DC/OS user account (optional; if priveKey not specified)
+```
+
+or, provide a load balanced DC/OS endpoint:
+```yml
+spring:
+    cloud:
+        marathon:
+            dcosAuthentication: true                     #authenticate via DCOS (default is "false" i.e. authenticate via marathon)
+            endpoint: http://dcos.local                  #override scheme+host+port
+            privateKey: <PEM Private Key>                #DC/OS Private Key; PKCS8, PEM, no password (optional; use endpoint/listOfServers for DC/OS)
+            username: dcos_user                          #username for DC/OS user account
+            password: myPassword                         #password for DC/OS user account (optional; if priveKey not specified)
+```
+
 Other configuration for services and discovery you can see in [official documentation](http://cloud.spring.io/spring-cloud-static/Camden.SR3/)
+
+### Authentication
+
+Spring Cloud Marathon supports four methods of authentication:
+
+- No Authentication (using Marathon Endpoint)
+- Basic Authentication (using Marathon Endpoint)
+- Token Authentication (using Marathon Endpoint)
+- Service Account Authentication (using DC/OS Endpoint)
+- User Account Authentication (using DC/OS Endpoint)
+
+#### No Authentication
+
+Do not specify username, password, token or dcosPrivateKey
+Specify a load balanced endpoint or listOfServers that describe the Marathon Endpoint. e.g.
+
+```yml
+spring:
+    cloud:
+        marathon:
+            listOfServers: m1:8080,m2:8080,m3:8080      #list of marathon masters
+```
+
+#### Basic Authentication
+
+Provide a username & password.  Specify an endpoint or listOfServers that describe the Marathon Endpoint. e.g.
+
+```yml
+spring:
+    cloud:
+        marathon:
+            listOfServers: m1:8080,m2:8080,m3:8080       #list of marathon masters
+            username: marathon                           #username for basic auth (optional)
+            password: mesos                              #password for basic auth (optional)
+```
+
+#### Token Authentication
+
+Provide a HTTP API token (note: tokens expire after 5 days).  Specify a load balanced endpoint or listOfServers that describe the Marathon Endpoint. e.g.
+
+```yml
+spring:
+    cloud:
+        marathon:
+            listOfServers: m1:8080,m2:8080,m3:8080       #list of marathon masters
+            token: <dcos_acs_token>                      #DC/OS HTTP API Token (optional)
+```
+
+#### DC/OS Service Account Authentication
+
+Provide a username and a private key.  Specify a load balanced endpoint or listOfServers that describe the DC/OS Endpoint. e.g.
+
+```yml
+spring:
+    cloud:
+        marathon:
+            dcosAuthentication: true                     #authenticate via DCOS (default is "false" i.e. authenticate via marathon)
+            listOfServers: m1,m2,m3                      #list of DC/OS masters
+            username: dcos_user                          #username for service account
+            privateKey: <PEM Private Key>                #DC/OS Private Key; PKCS8, PEM, no password
+```
+
+Note that DC/OS presents Marathon API methods under via path <dcosEndpoint>/marathon
+
+This method of authentication will invoke <dcosEndpoint>/acs/api/v1/auth/login to retrieve a HTTP API Token, and will refresh the token when it expires.
+Subsequent requests to marathon for service discovery will automatically adjust the path e.g. <dcosEndpoint>/marathon/v2/apps
+
+It is best practice to hide the value of the private key using DC/OS secrets.  When testing it is possible to declare the private key as a YAML multiline property using the '|' notation. e.g.
+```yml
+spring:
+    cloud:
+        marathon:
+            dcosPrivateKey: |
+                -----BEGIN PRIVATE KEY-----
+                <base64 encoded data here>
+                ...
+                -----END PRIVATE KEY-----
+```
+
+
+The private key must formated as PKCS8/PEM and must not be password protected.
+
+To generate a private key:
+```
+openssl genrsa -des3 -out private.pem 2048
+```
+
+To extract the public key:
+```
+openssl rsa -in private.pem -outform PEM -pubout -out public.pem
+```
+
+To format the private key as PKCS8:
+```
+openssl pkcs8 -in private.pem -topk8 -v2 des3 -out p8.pem
+```
+
+To remove password protection from a PKCS8 private key:
+```
+openssl pkcs8 -topk8 -nocrypt -in p8.pem -outform PEM -out p8open.pem
+```
+
+#### DC/OS User Account Authentication
+
+Provide a username and a password.  Specify a load balanced endpoint or listOfServers that describe the DC/OS Endpoint. e.g.
+
+```yml
+spring:
+    cloud:
+        marathon:
+            dcosAuthentication: true                     #authenticate via DCOS (default is "false" i.e. authenticate via marathon)
+            listOfServers: m1,m2,m3                      #list of DC/OS masters
+            username: dcos_user                          #username for DC/OS user account
+            password: myPassword                         #password for DC/OS user account
+```
+
+Note that DC/OS presents Marathon API methods under via path <dcosEndpoint>/marathon
+
+This method of authentication will invoke <dcosEndpoint>/acs/api/v1/auth/login to retrieve a HTTP API Token, and will refresh the token when it expires.
+Subsequent requests to marathon for service discovery will automatically adjust the path e.g. <dcosEndpoint>/marathon/v2/apps
 
 ### Services configuration
 
@@ -100,6 +255,59 @@ group.path.app:
     ribbon:
         <your settings are here>
 ```
+
+If a specific service cannot be located by the id, then a second lookup is performed for services that contain the given id. e.g.
+A service has been deployed using three different Marathon service ids:
+```
+/group1/path/app
+/group2/path/app
+/group3/path/app
+```
+A client is configured for the service name only, excluding the group & path from the id:
+```yml
+app:
+    ribbon:
+        <your settings are here>
+```
+Service Tasks for all three services will be discovered & used by ribbon.
+
+Sometimes it is useful discover services that are advertising a specific capability; by API version for example:
+Three versions of a service have been deployed, with the following Marathon service ids and labels:
+```
+/group1/path/app  "labels":{ "API_VERSION" : "V1" }
+/group2/path/app  "labels":{ "API_VERSION" : "V2" }
+/group3/path/app  "labels":{ "API_VERSION" : "V2" }
+```
+A client is configured to expect the "V2" API Version:
+```yml
+app:
+    ribbon:
+        <your settings are here>
+        MetaDataFilter:
+            API_VERSION: V2
+```
+Only service instances that contain "app" in the service id and have matching labels will be discovered & used by ribbon.
+
+Where multiple values are specified for MetaDataFilter, all values must match service labels before ribbon will use the service instance:
+```yml
+app:
+    ribbon:
+        <your settings are here>
+        MetaDataFilter:
+            API_VERSION: V2
+            ENVIRONMENT: UAT
+            APPLICATION_OWNER: fred.bloggs@company.com
+```
+
+Combining the loose service id matching with service label filtering permits us to get creative with service discovery:
+```yml
+group.path:
+    ribbon:
+        <your settings are here>
+        MetaDataFilter:
+            CUSTOMER_ENTITY: V1
+```
+i.e. select any service deployed to /group/path that supports Version 1 of the Customer Entity
 
 ## Running the example
 

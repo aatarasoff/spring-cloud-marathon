@@ -1,7 +1,7 @@
 package info.developerblog.spring.cloud.marathon.discovery;
 
 import mesosphere.marathon.client.Marathon;
-import mesosphere.marathon.client.utils.MarathonException;
+import mesosphere.marathon.client.MarathonException;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -25,7 +25,7 @@ public class MarathonDiscoveryClientErrorsTests {
         );
 
         when(marathonClient.getApps()).thenThrow(new MarathonException(404, "Not Found"));
-        when(marathonClient.getAppTasks(anyString())).thenThrow(new MarathonException(404, "Not Found"));
+        when(marathonClient.getApp(anyString())).thenThrow(new MarathonException(404, "Not Found"));
     }
 
     @Test
