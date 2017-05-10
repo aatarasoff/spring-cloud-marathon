@@ -257,7 +257,7 @@ There is regexp pattern `.+\.(.+)` for fetching zone (or datacenter) exists. So,
 customer:
     ribbon:
       <your settings here>
-      ZonePattern: .+\.(.+)
+      ZonePattern: '.+\.(.+)'
 ```
 Finally, you should define zone for app:
 ```yaml
