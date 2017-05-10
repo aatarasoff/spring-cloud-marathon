@@ -2,6 +2,7 @@ package info.developerblog.spring.cloud.marathon.discovery.ribbon;
 
 import com.netflix.client.config.IClientConfig;
 import com.netflix.loadbalancer.AbstractServerList;
+import com.netflix.loadbalancer.Server;
 import info.developerblog.spring.cloud.marathon.discovery.MarathonDiscoveryProperties;
 import info.developerblog.spring.cloud.marathon.utils.ServiceIdConverter;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -27,6 +30,7 @@ import java.util.stream.Collectors;
 public class MarathonServerList extends AbstractServerList<MarathonServer> {
 
     private static final String IGNORESERVICEID_PROPERTY = "IgnoreServiceId";
+    private static final String ZONE_PATTERN = "ZonePattern";
 
     private static final String METADATAFILTER_PROPERTY = "MetaDataFilter";
 
@@ -46,6 +50,7 @@ public class MarathonServerList extends AbstractServerList<MarathonServer> {
     private String serviceId;
     private boolean ignoreServiceId;
     private Map<String,String> queryMap;
+    private Pattern zonePattern = null;
 
     public MarathonServerList(Marathon client, MarathonDiscoveryProperties properties) {
         this.client = client;
@@ -90,6 +95,15 @@ public class MarathonServerList extends AbstractServerList<MarathonServer> {
 
             queryMap.put("label",labelSelectorQuery);
         }
+
+        if (clientConfig.getProperties().containsKey(ZONE_PATTERN)) {
+            String zonePatternRaw = clientConfig.getProperties().get(ZONE_PATTERN).toString();
+            try {
+                zonePattern = Pattern.compile(zonePatternRaw);
+            } catch (Exception e) {
+                log.error("Could not parse zone pattern: " + zonePatternRaw, e);
+            }
+        }
     }
 
     /**
@@ -108,7 +122,6 @@ public class MarathonServerList extends AbstractServerList<MarathonServer> {
         } else {
             return EQUAL;
         }
-
     }
 
     @Override
@@ -206,9 +219,24 @@ public class MarathonServerList extends AbstractServerList<MarathonServer> {
                             task.getHost(),
                             task.getPorts().stream().findFirst().orElse(0),
                             healthChecks
-                    );
+                    ).withZone(extractZoneFromHostname(task.getHost()));
                 })
                 .collect(Collectors.toList());
 
+    }
+
+    private String extractZoneFromHostname(String host) {
+        if (zonePattern == null) {
+            return Server.UNKNOWN_ZONE;
+        }
+
+        Matcher matcher = zonePattern.matcher(host);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+
+        log.warn("Zone was not fetched by pattern " + zonePattern.pattern() + " from hostname " + host);
+
+        return Server.UNKNOWN_ZONE;
     }
 }

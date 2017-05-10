@@ -10,4 +10,6 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Data
 public class MarathonDiscoveryProperties {
     private boolean enabled = true;
+
+    private String zone;
 }

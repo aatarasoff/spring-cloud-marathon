@@ -4,7 +4,6 @@ import com.netflix.loadbalancer.Server;
 import mesosphere.marathon.client.model.v2.HealthCheckResult;
 
 import java.util.Collection;
-import java.util.Map;
 
 /**
  * Created by aleksandr on 07.07.16.
@@ -16,6 +15,11 @@ public class MarathonServer extends Server {
     public MarathonServer(String host, int port, Collection<HealthCheckResult> healthChecks) {
         super(host, port);
         this.healthChecks = healthChecks;
+    }
+
+    public MarathonServer withZone(String zone) {
+        this.setZone(zone);
+        return this;
     }
 
     public boolean isHealthChecksPassing() {

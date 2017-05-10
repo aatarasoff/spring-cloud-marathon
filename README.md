@@ -214,11 +214,11 @@ Ignore the service id entirely and only match using service labels:
 ```yaml
 customer:
     ribbon:
-    <your settings here>
-    IgnoreServiceId: true
-    MetaDataFilter:
-      CUSTOMER_ENTITY: V1
-      ENVIRONMENT: UAT
+      <your settings here>
+      IgnoreServiceId: true
+      MetaDataFilter:
+        CUSTOMER_ENTITY: V1
+        ENVIRONMENT: UAT
 ```
 i.e. select any service in the UAT environment that supports Version 1 of the Customer Entity.  
 Note: The service id of 'customer' is ignored, so all services will be filtered by service label
@@ -243,6 +243,27 @@ customer:
       API_VERSION: in(V1,V2)       # is V1 OR is V2
       ENVIRONMENT: notin(UAT,PROD) # is not UAT AND is not PROD
 ```
+
+#### Zones
+Zones support is provided by fetching them from instance's hostname. For example, mesos slaves have hostname like following:
+```text
+slave1.dc1
+slave2.dc1
+slave1.dc2
+...
+```
+There is regexp pattern `.+\.(.+)` for fetching zone (or datacenter) exists. So, you could define it in service configuration:
+```yaml
+customer:
+    ribbon:
+      <your settings here>
+      ZonePattern: .+\.(.+)
+```
+Finally, you should define zone for app:
+```yaml
+spring.cloud.marathon.discovery.zone: dc1
+```
+And then different zone-aware filters and rules will be applied.
 
 ## Running the example
 
