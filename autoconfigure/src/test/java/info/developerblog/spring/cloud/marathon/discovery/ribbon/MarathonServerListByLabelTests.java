@@ -24,7 +24,7 @@ import static org.mockito.Mockito.when;
 /**
  * Created by aleksandr on 08.07.16.
  */
-public class MarathonServerListTestsIgnoreServiceId {
+public class MarathonServerListByLabelTests {
     private MarathonServerList serverList;
     private Marathon marathonClient = mock(Marathon.class);
 
@@ -38,8 +38,13 @@ public class MarathonServerListTestsIgnoreServiceId {
         IClientConfig config = mock(IClientConfig.class);
         when(config.getClientName()).thenReturn("service1");
 
-        Map<String, Object> properties = new HashMap<>();
+        LinkedHashMap<String, Object> properties = new LinkedHashMap<>();
         properties.put("IgnoreServiceId",true);
+        properties.put("MetaDataFilter.A","A");
+        properties.put("MetaDataFilter.B","in(V1,V2,V3)");
+        properties.put("MetaDataFilter.C","!=X");
+        properties.put("MetaDataFilter.D","==Y");
+        properties.put("MetaDataFilter.E","notin(1,2,3)");
         when(config.getProperties()).thenReturn(properties);
 
         serverList.initWithNiwsConfig(config);
@@ -51,7 +56,9 @@ public class MarathonServerListTestsIgnoreServiceId {
 
         GetAppsResponse appsResponse = new GetAppsResponse();
 
-        when(marathonClient.getApps())
+        Map<String,String> queryMap = new HashMap<>();
+        queryMap.put("label","A==A,B in(V1,V2,V3),C!=X,D==Y,E notin(1,2,3)");
+        when(marathonClient.getApps(queryMap))
                 .thenReturn(appsResponse);
 
         App app = new App();
