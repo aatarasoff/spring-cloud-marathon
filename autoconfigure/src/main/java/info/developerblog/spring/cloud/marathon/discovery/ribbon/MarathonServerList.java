@@ -25,22 +25,31 @@ import java.util.stream.Collectors;
  */
 @Slf4j
 public class MarathonServerList extends AbstractServerList<MarathonServer> {
+
+    private static final String IGNORESERVICEID_PROPERTY = "IgnoreServiceId";
+
     private Marathon client;
     private MarathonDiscoveryProperties properties;
 
     private String serviceId;
+    private boolean ignoreServiceId;
     private Map<String,String> queryMap;
 
     public MarathonServerList(Marathon client, MarathonDiscoveryProperties properties) {
         this.client = client;
         this.properties = properties;
         this.queryMap = new HashMap<>();
+        this.ignoreServiceId = false;
     }
 
     @Override
     public void initWithNiwsConfig(IClientConfig clientConfig) {
         serviceId = ServiceIdConverter.convertToMarathonId(clientConfig.getClientName());
         queryMap.put("id",serviceId);
+
+        if (clientConfig.getProperties().containsKey(IGNORESERVICEID_PROPERTY)) {
+            ignoreServiceId = "true".equalsIgnoreCase(clientConfig.getProperties().get(IGNORESERVICEID_PROPERTY).toString());
+        }
     }
 
     @Override
@@ -62,17 +71,19 @@ public class MarathonServerList extends AbstractServerList<MarathonServer> {
 
             List<MarathonServer> instances = new ArrayList<>();
 
+            if (!ignoreServiceId) {
             /*
             Step 1 - Search for an application that matches the specific service id
              */
-            try {
-                GetAppResponse response = client.getApp(serviceId);
+                try {
+                    GetAppResponse response = client.getApp(serviceId);
 
-                if (response!=null && response.getApp()!=null)
-                    instances.addAll(extractServiceInstances(response.getApp()));
+                    if (response != null && response.getApp() != null)
+                        instances.addAll(extractServiceInstances(response.getApp()));
 
-            } catch (MarathonException e) {
-                log.error(e.getMessage(), e);
+                } catch (MarathonException e) {
+                    log.error(e.getMessage(), e);
+                }
             }
 
             if (instances.size()==0) {
@@ -81,11 +92,11 @@ public class MarathonServerList extends AbstractServerList<MarathonServer> {
                 Step 2 - Search for all applications whose marathon id contains the service id (e.g. "*.{serviceId}*.")
                 This is supported by the marathon api by passing a partial id as a query parameter
                  */
-                GetAppsResponse appsResponse = client.getApps(queryMap);
+                GetAppsResponse appsResponse = (ignoreServiceId)?client.getApps():client.getApps(queryMap);
 
                 if (appsResponse!=null && appsResponse.getApps()!=null) {
 
-                    log.debug("Discovered " + appsResponse.getApps().size() + " service" + ((appsResponse.getApps().size() == 1) ? "" : "s") + " with ids that contain [" + serviceId + "]");
+                    log.debug("Discovered " + appsResponse.getApps().size() + " service" + ((appsResponse.getApps().size() == 1) ? "" : "s") + ((ignoreServiceId)?"":" with ids that contain [" + serviceId + "]"));
 
                     for (App app : appsResponse.getApps()){
 
@@ -100,7 +111,7 @@ public class MarathonServerList extends AbstractServerList<MarathonServer> {
                 }
             }
 
-            log.debug("Discovered " + instances.size() + " service instance" + ((instances.size() == 1) ? "" : "s") + " for service id [" + serviceId + "]");
+            log.debug("Discovered " + instances.size() + " service instance" + ((instances.size() == 1) ? "" : "s") + ((ignoreServiceId)?"":" with ids that contain [" + serviceId + "]"));
             return instances;
 
 

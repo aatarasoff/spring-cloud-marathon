@@ -3,16 +3,17 @@ package info.developerblog.spring.cloud.marathon.discovery.ribbon;
 import com.netflix.client.config.IClientConfig;
 import info.developerblog.spring.cloud.marathon.discovery.MarathonDiscoveryProperties;
 import mesosphere.marathon.client.Marathon;
-import mesosphere.marathon.client.model.v2.*;
 import mesosphere.marathon.client.utils.MarathonException;
+import mesosphere.marathon.client.model.v2.App;
+import mesosphere.marathon.client.model.v2.GetAppResponse;
+import mesosphere.marathon.client.model.v2.GetAppsResponse;
+import mesosphere.marathon.client.model.v2.Task;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.reflectionassert.ReflectionAssert;
 import org.unitils.reflectionassert.ReflectionComparatorMode;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -23,7 +24,7 @@ import static org.mockito.Mockito.when;
 /**
  * Created by aleksandr on 08.07.16.
  */
-public class MarathonServerListTests {
+public class MarathonServerListTestsIgnoreServiceId {
     private MarathonServerList serverList;
     private Marathon marathonClient = mock(Marathon.class);
 
@@ -38,7 +39,7 @@ public class MarathonServerListTests {
         when(config.getClientName()).thenReturn("service1");
 
         Map<String, Object> properties = new HashMap<>();
-        properties.put("IgnoreServiceId",false);
+        properties.put("IgnoreServiceId",true);
         when(config.getProperties()).thenReturn(properties);
 
         serverList.initWithNiwsConfig(config);
@@ -48,19 +49,25 @@ public class MarathonServerListTests {
         when(marathonClient.getApp("/service1"))
                 .thenReturn(appResponse);
 
+        GetAppsResponse appsResponse = new GetAppsResponse();
+
+        when(marathonClient.getApps())
+                .thenReturn(appsResponse);
+
         App app = new App();
         appResponse.setApp(app);
 
+        app.setId("/service1");
         app.setTasks(IntStream.of(1,2)
-                        .mapToObj(index -> {
-                            Task task = new Task();
-                            task.setHost("host" + index);
-                            task.setPorts(IntStream.of(9090, 9091)
-                                    .boxed()
-                                    .collect(Collectors.toList()));
-                            task.setHealthCheckResults(Collections.emptyList());
-                            return task;
-                        }).collect(Collectors.toList())
+                .mapToObj(index -> {
+                    Task task = new Task();
+                    task.setHost("host" + index);
+                    task.setPorts(IntStream.of(9090, 9091)
+                            .boxed()
+                            .collect(Collectors.toList()));
+                    task.setHealthCheckResults(Collections.emptyList());
+                    return task;
+                }).collect(Collectors.toList())
         );
 
         Task withNullHealthChecks = new Task();
@@ -69,6 +76,11 @@ public class MarathonServerListTests {
                 .boxed()
                 .collect(Collectors.toList()));
         app.getTasks().add(withNullHealthChecks);
+
+        List<App> apps = new ArrayList<>();
+        apps.add(app);
+        appsResponse.setApps(apps);
+
     }
 
     @Test

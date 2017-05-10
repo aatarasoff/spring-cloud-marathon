@@ -43,19 +43,23 @@ public class MarathonDiscoveryClient implements DiscoveryClient {
 
         try {
 
+            boolean ignoreServiceId = "*".equals(serviceId);
+
             List<ServiceInstance> instances = new ArrayList<>();
 
+            if (!ignoreServiceId) {
             /*
             Step 1 - Search for an application that matches the specific service id
              */
-            try {
-                GetAppResponse response = client.getApp(ServiceIdConverter.convertToMarathonId(serviceId));
+                try {
+                    GetAppResponse response = client.getApp(ServiceIdConverter.convertToMarathonId(serviceId));
 
-                if (response!=null && response.getApp()!=null)
-                    instances.addAll(extractServiceInstances(response.getApp()));
+                    if (response != null && response.getApp() != null)
+                        instances.addAll(extractServiceInstances(response.getApp()));
 
-            } catch (MarathonException e){
-                log.error(e.getMessage(), e);
+                } catch (MarathonException e) {
+                    log.error(e.getMessage(), e);
+                }
             }
 
             if (instances.size()==0) {
@@ -67,11 +71,11 @@ public class MarathonDiscoveryClient implements DiscoveryClient {
                 Map<String,String> queryMap = new HashMap<>();
                 queryMap.put("id",ServiceIdConverter.convertToMarathonId(serviceId));
 
-                GetAppsResponse appsResponse = client.getApps(queryMap);
+                GetAppsResponse appsResponse = (ignoreServiceId)?client.getApps():client.getApps(queryMap);
 
                 if (appsResponse!=null && appsResponse.getApps()!=null) {
 
-                    log.debug("Discovered " + appsResponse.getApps().size() + " service" + ((appsResponse.getApps().size() == 1) ? "" : "s") + " with ids that contain [" + serviceId + "]");
+                    log.debug("Discovered " + appsResponse.getApps().size() + " service" + ((appsResponse.getApps().size() == 1) ? "" : "s") + ((ignoreServiceId)?"":" with ids that contain [" + serviceId + "]"));
 
                     for (App app : appsResponse.getApps()){
 
@@ -85,7 +89,7 @@ public class MarathonDiscoveryClient implements DiscoveryClient {
                 }
             }
 
-            log.debug("Discovered " + instances.size() + " service instance" + ((instances.size() == 1) ? "" : "s") + " for service id [" + serviceId + "]");
+            log.debug("Discovered " + instances.size() + " service instance" + ((instances.size() == 1) ? "" : "s") + ((ignoreServiceId)?"":" with ids that contain [" + serviceId + "]"));
             return instances;
 
         } catch (Exception e) {

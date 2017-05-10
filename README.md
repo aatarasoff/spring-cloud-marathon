@@ -55,13 +55,13 @@ All configuration should be provided in `bootstrap.yml`
 
 ### Development mode (without Marathon)
 
-```yml
+```yaml
 spring.cloud.marathon.enabled: false
 ```
 
 ### Standalone mode (single-host Marathon)
 
-```yml
+```yaml
 spring:
     cloud:
         marathon:
@@ -73,7 +73,7 @@ spring:
 ### Production mode
 
 Authentication via Marathon, providing a list of marathon masters:
-```yml
+```yaml
 spring:
     cloud:
         marathon:
@@ -84,7 +84,7 @@ spring:
 ```
 
 or, provide a load balanced marathon endpoint:
-```yml
+```yaml
 spring:
     cloud:
         marathon:
@@ -109,7 +109,7 @@ Spring Cloud Marathon supports four methods of authentication:
 Do not specify username, password, token or dcosPrivateKey
 Specify a load balanced endpoint or listOfServers that describe the Marathon Endpoint. e.g.
 
-```yml
+```yaml
 spring:
     cloud:
         marathon:
@@ -120,7 +120,7 @@ spring:
 
 Provide a username & password.  Specify an endpoint or listOfServers that describe the Marathon Endpoint. e.g.
 
-```yml
+```yaml
 spring:
     cloud:
         marathon:
@@ -133,7 +133,7 @@ spring:
 
 Provide a HTTP API token (note: tokens expire after 5 days).  Specify a load balanced endpoint or listOfServers that describe the Marathon Endpoint. e.g.
 
-```yml
+```yaml
 spring:
     cloud:
         marathon:
@@ -144,14 +144,14 @@ spring:
 ### Services configuration
 
 There is one specific moment for services notation and their configuration. In Marathon service id has following pattern:
-```
+```text
 /group/path/app
 ```
 
 and symbol `/` is not allowed as a virtual host in Feign or RestTemplate. So we cannot use original service id as Spring Cloud service id. Instead of `/` in this implementation other separator: `.` is used. That means that service with id: `/group/path/app` has internal presentation: `group.path.app`.
 
 And you should configure them like:
-```yml
+```yaml
 group.path.app:
     ribbon:
         <your settings are here>
@@ -159,13 +159,13 @@ group.path.app:
 
 If a specific service cannot be located by the id, then a second lookup is performed for services that contain the given id. e.g.
 A service has been deployed using three different Marathon service ids:
-```
+```text
 /group1/path/app
 /group2/path/app
 /group3/path/app
 ```
 A client is configured for the service name only, excluding the group & path from the id:
-```yml
+```yaml
 app:
     ribbon:
         <your settings are here>
@@ -174,13 +174,13 @@ Service Tasks for all three services will be discovered & used by ribbon.
 
 Sometimes it is useful discover services that are advertising a specific capability; by API version for example:
 Three versions of a service have been deployed, with the following Marathon service ids and labels:
-```
+```text
 /group1/path/app  "labels":{ "API_VERSION" : "V1" }
 /group2/path/app  "labels":{ "API_VERSION" : "V2" }
 /group3/path/app  "labels":{ "API_VERSION" : "V2" }
 ```
 A client is configured to expect the "V2" API Version:
-```yml
+```yaml
 app:
     ribbon:
         <your settings are here>
@@ -190,7 +190,7 @@ app:
 Only service instances that contain "app" in the service id and have matching labels will be discovered & used by ribbon.
 
 Where multiple values are specified for MetaDataFilter, all values must match service labels before ribbon will use the service instance:
-```yml
+```yaml
 app:
     ribbon:
         <your settings are here>
@@ -201,7 +201,7 @@ app:
 ```
 
 Combining the loose service id matching with service label filtering permits us to get creative with service discovery:
-```yml
+```yaml
 group.path:
     ribbon:
         <your settings are here>
@@ -209,6 +209,19 @@ group.path:
             CUSTOMER_ENTITY: V1
 ```
 i.e. select any service deployed to /group/path that supports Version 1 of the Customer Entity
+
+Ignore the service id entirely and only match using service labels:
+```yaml
+customer:
+    ribbon:
+    <your settings here>
+    IgnoreServiceId: true
+    MetaDataFilter:
+      CUSTOMER_ENTITY: V1
+      ENVIRONMENT: UAT
+```
+i.e. select any service in the UAT environment that supports Version 1 of the Customer Entity.  
+Note: The service id of 'customer' is ignored, so all services will be filtered by service label
 
 ## Running the example
 
