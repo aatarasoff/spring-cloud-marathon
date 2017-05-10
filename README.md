@@ -223,6 +223,27 @@ customer:
 i.e. select any service in the UAT environment that supports Version 1 of the Customer Entity.  
 Note: The service id of 'customer' is ignored, so all services will be filtered by service label
 
+Specify equality based selector on service labels
+```yaml
+customer:
+    ribbon:
+    <your settings here>
+    MetaDataFilter:
+      API_VERSION: '!=V3'  # not equal to V3; note: must be quoted to keep yaml happy
+      ENVIRONMENT: '==DEV' # equal to DEV; note: must be quoted to keep yaml happy
+      CUSTOMER_ENTITY: V1  # equal to V1; default is equals
+```
+
+Specify set based selector on service labels
+```yaml
+customer:
+    ribbon:
+    <your settings here>
+    MetaDataFilter:
+      API_VERSION: in(V1,V2)       # is V1 OR is V2
+      ENVIRONMENT: notin(UAT,PROD) # is not UAT AND is not PROD
+```
+
 ## Running the example
 
 Build sample application docker image:

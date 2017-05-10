@@ -20,6 +20,8 @@ public class MarathonDiscoveryClient implements DiscoveryClient {
 
     private static final String SPRING_CLOUD_MARATHON_DISCOVERY_CLIENT_DESCRIPTION = "Spring Cloud Marathon Discovery Client";
 
+    private static final String ALL_SERVICES = "*";
+
     private final Marathon client;
     private final MarathonDiscoveryProperties properties;
 
@@ -43,7 +45,7 @@ public class MarathonDiscoveryClient implements DiscoveryClient {
 
         try {
 
-            boolean ignoreServiceId = "*".equals(serviceId);
+            boolean ignoreServiceId = ALL_SERVICES.equals(serviceId); // "*" indicates fetch all services
 
             List<ServiceInstance> instances = new ArrayList<>();
 
