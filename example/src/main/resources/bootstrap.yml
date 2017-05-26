@@ -1,3 +1,5 @@
 spring:
   application:
     name: test-marathon-app
+
+spring.cloud.marathon.discovery.zone: dc1

@@ -279,7 +279,8 @@ docker-compose up -d
 
 Add following record into your `/etc/hosts` file:
 ```bash
-127.0.0.1 mesos-slave
+127.0.0.1 mesos-slave.dc1
+127.0.0.1 mesos-slave.dc2
 ```
 
 Then upload `test-marathon-app-manifest.json` as application manifest:

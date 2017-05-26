@@ -12,6 +12,10 @@ endpoints:
   shutdown:
     enabled: true
 
+test-marathon-app:
+  ribbon:
+    ZonePattern: '.+\.(.+)'
+
 logging:
   level:
     info.developerblog.spring.cloud.marathon: DEBUG

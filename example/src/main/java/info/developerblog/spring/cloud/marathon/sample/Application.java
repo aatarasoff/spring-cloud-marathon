@@ -26,7 +26,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.URI;
+import java.net.UnknownHostException;
 import java.util.List;
 
 /**
@@ -65,8 +67,8 @@ public class Application {
     }
 
     @RequestMapping("/me")
-    public String me() {
-        return serviceId;
+    public String me() throws UnknownHostException {
+        return serviceId + " @ " + InetAddress.getLocalHost().getHostName();
     }
 
     @RequestMapping("/services")
