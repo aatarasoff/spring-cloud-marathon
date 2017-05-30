@@ -101,7 +101,8 @@ public class MarathonServerList extends AbstractServerList<MarathonServer> {
             try {
                 zonePattern = Pattern.compile(zonePatternRaw);
             } catch (Exception e) {
-                log.error("Could not parse zone pattern: " + zonePatternRaw, e);
+            	if (log.isErrorEnabled())
+                    log.error("Could not parse zone pattern: " + zonePatternRaw, e);
             }
         }
     }
@@ -168,9 +169,11 @@ public class MarathonServerList extends AbstractServerList<MarathonServer> {
 
                 if (appsResponse!=null && appsResponse.getApps()!=null) {
 
-                    log.debug("Discovered " + appsResponse.getApps().size() + " service" + ((appsResponse.getApps().size() == 1) ? "" : "s") + ((ignoreServiceId)?"":" with ids that contain [" + serviceId + "]"));
+                	List<App> apps = appsResponse.getApps();
+                	
+                	log.debug("Discovered {} service{}{}", apps.size(), apps.size() == 1 ? "" : "s", ignoreServiceId ? "" : String.format(" with ids that contain [%s]", serviceId));
 
-                    for (App app : appsResponse.getApps()){
+                    for (App app : apps){
 
                         // Fetch data for this specific service id, to collect task information
                         GetAppResponse response = client.getApp(app.getId());
@@ -183,7 +186,7 @@ public class MarathonServerList extends AbstractServerList<MarathonServer> {
                 }
             }
 
-            log.debug("Discovered " + instances.size() + " service instance" + ((instances.size() == 1) ? "" : "s") + ((ignoreServiceId)?"":" with ids that contain [" + serviceId + "]"));
+            log.debug("Discovered {} service instance{}{}", instances.size(), instances.size() == 1 ? "" : "s", ignoreServiceId ? "" : String.format(" with ids that contain [%]", serviceId));
             return instances;
 
 
@@ -202,7 +205,7 @@ public class MarathonServerList extends AbstractServerList<MarathonServer> {
      */
     private List<MarathonServer> extractServiceInstances(App app) {
 
-        log.debug("Discovered service [" + app.getId() + "]");
+    	log.debug("Discovered service [{}]", app.getId());
 
         if (app.getTasks().size()==0)
             return Collections.emptyList();
@@ -235,7 +238,7 @@ public class MarathonServerList extends AbstractServerList<MarathonServer> {
             return matcher.group(1);
         }
 
-        log.warn("Zone was not fetched by pattern " + zonePattern.pattern() + " from hostname " + host);
+        log.warn("Zone was not fetched by pattern {} from hostname {}", zonePattern.pattern(), host);
 
         return Server.UNKNOWN_ZONE;
     }
