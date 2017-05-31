@@ -64,7 +64,7 @@ public class MarathonDiscoveryClient implements DiscoveryClient {
                 }
             }
 
-            if (instances.size()==0) {
+            if (instances.isEmpty()) {
 
                 /*
                 Step 2 - Search for all applications whose marathon id contains the service id (e.g. "*.{serviceId}*.")
@@ -113,7 +113,7 @@ public class MarathonDiscoveryClient implements DiscoveryClient {
 
     	log.debug("Discovered service [{}]", app.getId());
 
-        if (app.getTasks().size()==0) {
+        if (app.getTasks().isEmpty()) {
             return Collections.emptyList();
         }
 
