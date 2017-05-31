@@ -79,7 +79,7 @@ public class MarathonServerList extends AbstractServerList<MarathonServer> {
         }
 
         // Filter list of services by service labels
-        if (metaDataFilter.size()>0){
+        if (!metaDataFilter.isEmpty()){
 
             String labelSelectorQuery = "";
 
@@ -159,7 +159,7 @@ public class MarathonServerList extends AbstractServerList<MarathonServer> {
                 }
             }
 
-            if (instances.size()==0) {
+            if (instances.isEmpty()) {
 
                 /*
                 Step 2 - Search for all applications whose marathon id contains the service id (e.g. "*.{serviceId}*.")
@@ -207,7 +207,7 @@ public class MarathonServerList extends AbstractServerList<MarathonServer> {
 
     	log.debug("Discovered service [{}]", app.getId());
 
-        if (app.getTasks().size()==0)
+        if (app.getTasks()isEmpty())
             return Collections.emptyList();
 
         return app.getTasks()
