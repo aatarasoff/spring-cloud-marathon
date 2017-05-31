@@ -27,10 +27,7 @@ public class MarathonDiscoveryClientTests {
 
     @BeforeClass
     public static void setup() {
-        discoveryClient = new MarathonDiscoveryClient(
-                marathonClient,
-                new MarathonDiscoveryProperties()
-        );
+        discoveryClient = new MarathonDiscoveryClient(marathonClient);
     }
 
     @Test

@@ -29,8 +29,7 @@ public class MarathonDiscoveryClientAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public MarathonDiscoveryClient marathonDiscoveryClient(MarathonDiscoveryProperties discoveryProperties) {
-        MarathonDiscoveryClient discoveryClient =
-                new MarathonDiscoveryClient(marathonClient, marathonDiscoveryProperties());
+        MarathonDiscoveryClient discoveryClient = new MarathonDiscoveryClient(marathonClient);
         return discoveryClient;
     }
 }
