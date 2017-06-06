@@ -19,10 +19,7 @@ public class MarathonDiscoveryClientErrorsTests {
 
     @BeforeClass
     public static void setup() throws MarathonException {
-        discoveryClient = new MarathonDiscoveryClient(
-                marathonClient,
-                new MarathonDiscoveryProperties()
-        );
+        discoveryClient = new MarathonDiscoveryClient(marathonClient);
 
         when(marathonClient.getApps()).thenThrow(new MarathonException(404, "Not Found"));
         when(marathonClient.getApp(anyString())).thenThrow(new MarathonException(404, "Not Found"));
