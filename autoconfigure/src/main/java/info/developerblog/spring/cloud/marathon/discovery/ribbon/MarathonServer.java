@@ -1,7 +1,7 @@
 package info.developerblog.spring.cloud.marathon.discovery.ribbon;
 
 import com.netflix.loadbalancer.Server;
-import mesosphere.marathon.client.model.v2.HealthCheckResult;
+import mesosphere.marathon.client.model.v2.HealthCheckResults;
 
 import java.util.Collection;
 
@@ -10,9 +10,9 @@ import java.util.Collection;
  */
 public class MarathonServer extends Server {
 
-    private Collection<HealthCheckResult> healthChecks;
+    private Collection<HealthCheckResults> healthChecks;
 
-    public MarathonServer(String host, int port, Collection<HealthCheckResult> healthChecks) {
+    public MarathonServer(String host, int port, Collection<HealthCheckResults> healthChecks) {
         super(host, port);
         this.healthChecks = healthChecks;
     }
@@ -24,7 +24,7 @@ public class MarathonServer extends Server {
 
     public boolean isHealthChecksPassing() {
         return healthChecks.parallelStream()
-                .allMatch(HealthCheckResult::isAlive);
+                .allMatch(HealthCheckResults::getAlive);
     }
 
 }

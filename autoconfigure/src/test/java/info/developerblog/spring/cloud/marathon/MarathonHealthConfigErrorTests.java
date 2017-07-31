@@ -2,7 +2,7 @@ package info.developerblog.spring.cloud.marathon;
 
 import info.developerblog.spring.cloud.marathon.discovery.MarathonDiscoveryClientAutoConfiguration;
 import mesosphere.marathon.client.Marathon;
-import mesosphere.marathon.client.utils.MarathonException;
+import mesosphere.marathon.client.MarathonException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -45,7 +45,7 @@ public class MarathonHealthConfigErrorTests {
         mvc = MockMvcBuilders
                 .webAppContextSetup(context)
                 .build();
-        when(client.getServerInfo()).thenThrow(new RuntimeException());
+        when(client.getApps()).thenThrow(new RuntimeException());
     }
 
     @Test

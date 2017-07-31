@@ -7,11 +7,11 @@ import info.developerblog.spring.cloud.marathon.discovery.MarathonDiscoveryPrope
 import info.developerblog.spring.cloud.marathon.utils.ServiceIdConverter;
 import lombok.extern.slf4j.Slf4j;
 import mesosphere.marathon.client.Marathon;
+import mesosphere.marathon.client.MarathonException;
 import mesosphere.marathon.client.model.v2.App;
 import mesosphere.marathon.client.model.v2.GetAppResponse;
 import mesosphere.marathon.client.model.v2.GetAppsResponse;
-import mesosphere.marathon.client.model.v2.HealthCheckResult;
-import mesosphere.marathon.client.utils.MarathonException;
+import mesosphere.marathon.client.model.v2.HealthCheckResults;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -213,7 +213,7 @@ public class MarathonServerList extends AbstractServerList<MarathonServer> {
         return app.getTasks()
                 .stream()
                 .map(task -> {
-                    Collection<HealthCheckResult> healthChecks =
+                    Collection<HealthCheckResults> healthChecks =
                             null != task.getHealthCheckResults()
                                     ? task.getHealthCheckResults()
                                     : new ArrayList<>();

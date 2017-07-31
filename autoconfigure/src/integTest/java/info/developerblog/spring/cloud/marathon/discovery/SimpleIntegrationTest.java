@@ -6,8 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.WebIntegrationTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cloud.client.discovery.DiscoveryClient;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
@@ -20,8 +19,7 @@ import static org.junit.Assert.assertEquals;
  * Created by aleksandr on 09.07.16.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = SimpleIntegrationTest.TestConfig.class)
-@WebIntegrationTest(randomPort = true)
+@SpringBootTest(classes = SimpleIntegrationTest.TestConfig.class)
 @DirtiesContext
 public class SimpleIntegrationTest {
 

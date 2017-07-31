@@ -1,9 +1,8 @@
-version: "2"
+version: "3"
 
 services:
   zk:
     image: bobrik/zookeeper
-    network_mode: bridge
     ports:
       - 2181:2181
     environment:
@@ -11,13 +10,10 @@ services:
       ZK_ID: 1
 
   master:
-    image: mesosphere/mesos-master:1.2.0
+    image: mesosphere/mesos-master:1.3.0
     restart: always
-    network_mode: bridge
     ports:
       - 5050:5050
-    links:
-      - zk
     environment:
       MESOS_ZK: zk://zk:2181/mesos
       MESOS_QUORUM: 1
@@ -28,58 +24,48 @@ services:
       - zk
 
   slave-one:
-    image: mesosphere/mesos-slave:1.2.0
+    image: mesosphere/mesos-slave:1.3.0
     restart: always
-    network_mode: bridge
     ports:
       - 5051:5051
     pid: host
-    links:
-      - zk
-      - master
     environment:
       MESOS_MASTER: zk://zk:2181/mesos
       MESOS_CONTAINERIZERS: docker,mesos
       MESOS_PORT: 505
       MESOS_RESOURCES: ports(*):[10000-11999]
       MESOS_WORK_DIR: /tmp/mesos
-      MESOS_HOSTNAME: mesos-slave.dc1
+      MESOS_HOSTNAME: mesos-slave.zone1
     volumes:
       - /sys/fs/cgroup:/sys/fs/cgroup
       - /var/run/docker.sock:/var/run/docker.sock
     depends_on:
       - zk
+      - master
 
   slave-two:
-      image: mesosphere/mesos-slave:1.2.0
-      restart: always
-      network_mode: bridge
-      ports:
-        - 5052:5052
-      pid: host
-      links:
-        - zk
-        - master
-      environment:
-        MESOS_MASTER: zk://zk:2181/mesos
-        MESOS_CONTAINERIZERS: docker,mesos
-        MESOS_PORT: 5052
-        MESOS_RESOURCES: ports(*):[10000-11999]
-        MESOS_WORK_DIR: /tmp/mesos
-        MESOS_HOSTNAME: mesos-slave.dc2
-      volumes:
-        - /sys/fs/cgroup:/sys/fs/cgroup
-        - /var/run/docker.sock:/var/run/docker.sock
-      depends_on:
-        - zk
+    image: mesosphere/mesos-slave:1.3.0
+    restart: always
+    ports:
+      - 5052:5052
+    pid: host
+    environment:
+      MESOS_MASTER: zk://zk:2181/mesos
+      MESOS_CONTAINERIZERS: docker,mesos
+      MESOS_PORT: 5052
+      MESOS_RESOURCES: ports(*):[10000-11999]
+      MESOS_WORK_DIR: /tmp/mesos
+      MESOS_HOSTNAME: mesos-slave.zone2
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup
+      - /var/run/docker.sock:/var/run/docker.sock
+    depends_on:
+      - zk
+      - master
 
   marathon:
     image: mesosphere/marathon:v1.3.6
     restart: always
-    network_mode: bridge
-    links:
-      - zk
-      - slave-one
     ports:
       - 8080:8080
     environment:
@@ -87,3 +73,4 @@ services:
       MARATHON_ZK: zk://zk:2181/mesos
     depends_on:
       - zk
+      - master

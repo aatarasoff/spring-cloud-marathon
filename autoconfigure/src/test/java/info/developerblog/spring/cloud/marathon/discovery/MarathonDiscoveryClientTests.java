@@ -1,8 +1,12 @@
 package info.developerblog.spring.cloud.marathon.discovery;
 
 import mesosphere.marathon.client.Marathon;
-import mesosphere.marathon.client.model.v2.*;
-import mesosphere.marathon.client.utils.MarathonException;
+import mesosphere.marathon.client.MarathonException;
+import mesosphere.marathon.client.model.v2.App;
+import mesosphere.marathon.client.model.v2.GetAppResponse;
+import mesosphere.marathon.client.model.v2.GetAppsResponse;
+import mesosphere.marathon.client.model.v2.HealthCheckResults;
+import mesosphere.marathon.client.model.v2.Task;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -11,7 +15,12 @@ import org.springframework.cloud.client.ServiceInstance;
 import org.unitils.reflectionassert.ReflectionAssert;
 import org.unitils.reflectionassert.ReflectionComparatorMode;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -110,13 +119,13 @@ public class MarathonDiscoveryClientTests {
                         .collect(Collectors.toList())
         );
 
-        HealthCheckResult healthCheckResult = new HealthCheckResult();
+        HealthCheckResults healthCheckResult = new HealthCheckResults();
         healthCheckResult.setAlive(true);
 
-        HealthCheckResult badHealthCheckResult = new HealthCheckResult();
+        HealthCheckResults badHealthCheckResult = new HealthCheckResults();
         badHealthCheckResult.setAlive(false);
 
-        List<HealthCheckResult> healthCheckResults = new ArrayList<>();
+        List<HealthCheckResults> healthCheckResults = new ArrayList<>();
         healthCheckResults.add(healthCheckResult);
         healthCheckResults.add(healthCheckResult);
 
@@ -133,7 +142,7 @@ public class MarathonDiscoveryClientTests {
                         .collect(Collectors.toList())
         );
 
-        List<HealthCheckResult> withBadHealthCheckResults = new ArrayList<>();
+        List<HealthCheckResults> withBadHealthCheckResults = new ArrayList<>();
         withBadHealthCheckResults.add(healthCheckResult);
         withBadHealthCheckResults.add(badHealthCheckResult);
 
@@ -204,13 +213,13 @@ public class MarathonDiscoveryClientTests {
                         .collect(Collectors.toList())
         );
 
-        HealthCheckResult healthCheckResult = new HealthCheckResult();
+        HealthCheckResults healthCheckResult = new HealthCheckResults();
         healthCheckResult.setAlive(true);
 
-        HealthCheckResult badHealthCheckResult = new HealthCheckResult();
+        HealthCheckResults badHealthCheckResult = new HealthCheckResults();
         badHealthCheckResult.setAlive(false);
 
-        List<HealthCheckResult> healthCheckResults = new ArrayList<>();
+        List<HealthCheckResults> healthCheckResults = new ArrayList<>();
         healthCheckResults.add(healthCheckResult);
         healthCheckResults.add(healthCheckResult);
 
@@ -238,7 +247,7 @@ public class MarathonDiscoveryClientTests {
                         .collect(Collectors.toList())
         );
 
-        List<HealthCheckResult> withBadHealthCheckResults = new ArrayList<>();
+        List<HealthCheckResults> withBadHealthCheckResults = new ArrayList<>();
         withBadHealthCheckResults.add(healthCheckResult);
         withBadHealthCheckResults.add(badHealthCheckResult);
 

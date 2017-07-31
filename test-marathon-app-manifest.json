@@ -24,6 +24,9 @@
       "forcePullImage": false
     }
   },
+  "labels": {
+    "environment": "test"
+  },
   "env": {
     "SPRING_CLOUD_MARATHON_ENABLED": "false"
   }

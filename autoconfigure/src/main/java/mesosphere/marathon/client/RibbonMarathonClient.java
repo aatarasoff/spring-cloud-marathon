@@ -11,8 +11,8 @@ import feign.gson.GsonEncoder;
 import feign.ribbon.LBClient;
 import feign.ribbon.LBClientFactory;
 import feign.ribbon.RibbonClient;
+import mesosphere.client.common.ModelUtils;
 import mesosphere.marathon.client.auth.TokenAuthRequestInterceptor;
-import mesosphere.marathon.client.utils.ModelUtils;
 import org.springframework.util.StringUtils;
 
 /**

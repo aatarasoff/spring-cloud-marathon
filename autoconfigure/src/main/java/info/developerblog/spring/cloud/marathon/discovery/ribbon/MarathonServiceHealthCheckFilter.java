@@ -1,7 +1,6 @@
 package info.developerblog.spring.cloud.marathon.discovery.ribbon;
 
 import com.netflix.loadbalancer.Server;
-import com.netflix.loadbalancer.ServerListFilter;
 import org.springframework.cloud.netflix.ribbon.ZonePreferenceServerListFilter;
 
 import java.util.List;

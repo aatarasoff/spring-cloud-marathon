@@ -7,6 +7,7 @@ import mesosphere.marathon.client.RibbonMarathonClient;
 import org.springframework.boot.actuate.endpoint.Endpoint;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -47,6 +48,7 @@ public class MarathonAutoConfiguration {
 
         @Bean
         @ConditionalOnMissingBean
+        @ConditionalOnProperty(value = "spring.cloud.discovery.client.marathon.health-indicator.enabled", matchIfMissing = true )
         public MarathonHealthIndicator healthIndicator(Marathon client) {
             return new MarathonHealthIndicator(client);
         }

@@ -2,10 +2,10 @@ package info.developerblog.spring.cloud.marathon;
 
 import info.developerblog.spring.cloud.marathon.discovery.MarathonDiscoveryClientAutoConfiguration;
 import mesosphere.marathon.client.Marathon;
+import mesosphere.marathon.client.MarathonException;
 import mesosphere.marathon.client.model.v2.App;
 import mesosphere.marathon.client.model.v2.GetAppsResponse;
 import mesosphere.marathon.client.model.v2.GetServerInfoResponse;
-import mesosphere.marathon.client.utils.MarathonException;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
