@@ -58,6 +58,7 @@ public class MarathonRibbonClientConfiguration {
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public ServerListFilter<Server> ribbonServerListFilter() {
         MarathonServiceHealthCheckFilter filter = new MarathonServiceHealthCheckFilter();
         filter.initWithNiwsConfig(clientConfig);
