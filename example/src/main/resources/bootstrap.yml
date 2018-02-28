@@ -1,5 +1,5 @@
 spring:
   application:
-    name: test-marathon-app
+    name: cool-app
 
 spring.cloud.marathon.discovery.zone: zone1

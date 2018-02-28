@@ -50,7 +50,7 @@ public class MarathonEndpointErrorTests {
 
     @Test
     public void test_unhealthy_endpoint() throws Exception {
-        Assert.assertEquals(200, mvc.perform(get("/marathon")).andReturn().getResponse().getStatus());
+        Assert.assertEquals(200, mvc.perform(get("/actuator/marathon")).andReturn().getResponse().getStatus());
     }
 
     @Configuration

@@ -1,5 +1,7 @@
 package mesosphere.marathon.client;
 
+import org.springframework.util.StringUtils;
+
 import com.netflix.client.ClientFactory;
 import com.netflix.client.DefaultLoadBalancerRetryHandler;
 import com.netflix.client.config.IClientConfig;
@@ -13,7 +15,6 @@ import feign.ribbon.LBClientFactory;
 import feign.ribbon.RibbonClient;
 import mesosphere.client.common.ModelUtils;
 import mesosphere.marathon.client.auth.TokenAuthRequestInterceptor;
-import org.springframework.util.StringUtils;
 
 /**
  * Created by aleksandr on 11.01.17.

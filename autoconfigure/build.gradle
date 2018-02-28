@@ -10,8 +10,8 @@ dependencies {
     provided "org.springframework.boot:spring-boot-configuration-processor", optional
     provided "org.springframework.cloud:spring-cloud-commons", optional
     provided "org.springframework.cloud:spring-cloud-netflix-core", optional
-    provided "org.springframework.cloud:spring-cloud-starter-ribbon", optional
-    provided "org.springframework.cloud:spring-cloud-starter-feign", optional
+    provided "org.springframework.cloud:spring-cloud-starter-netflix-ribbon", optional
+    provided "org.springframework.cloud:spring-cloud-starter-openfeign", optional
 
     provided "com.mesosphere:marathon-client", optional
     provided "com.netflix.feign:feign-ribbon", optional

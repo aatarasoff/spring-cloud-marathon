@@ -1,32 +1,34 @@
 package info.developerblog.spring.cloud.marathon.actuator;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.actuate.endpoint.annotation.Endpoint;
+import org.springframework.boot.actuate.endpoint.annotation.ReadOperation;
+
 import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import mesosphere.marathon.client.Marathon;
 import mesosphere.marathon.client.model.v2.App;
 import mesosphere.marathon.client.model.v2.GetServerInfoResponse;
-import org.springframework.boot.actuate.endpoint.AbstractEndpoint;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-
-import java.util.List;
 
 /**
  * Created by aleksandr on 12.08.16.
  */
-@ConfigurationProperties(prefix = "endpoints.marathon", ignoreUnknownFields = false)
 @Slf4j
-public class MarathonEndpoint extends AbstractEndpoint<MarathonEndpoint.MarathonData> {
+@Endpoint(id = "marathon")
+public class MarathonEndpoint {
 
     private Marathon marathon;
 
+    @Autowired
     public MarathonEndpoint(Marathon marathon) {
-        super("marathon", false, true);
         this.marathon = marathon;
     }
 
-    @Override
-    public MarathonData invoke() {
+    @ReadOperation
+    public MarathonData info() {
         try {
             return MarathonData.builder()
                     .serverInfo(marathon.getServerInfo())

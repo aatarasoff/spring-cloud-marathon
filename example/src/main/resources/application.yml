@@ -4,13 +4,6 @@ server:
 ribbon:
   ServerListRefreshInterval: 1000
 
-endpoints:
-  health:
-    sensitive: false
-  restart:
-    enabled: true
-  shutdown:
-    enabled: true
 
 test-marathon-app:
   ribbon:
@@ -19,3 +12,10 @@ test-marathon-app:
 logging:
   level:
     info.developerblog.spring.cloud.marathon: DEBUG
+
+management:
+  endpoints:
+    enabled-by-default: true
+    web:
+      exposure:
+        include: '*'

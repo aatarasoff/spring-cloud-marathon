@@ -40,11 +40,6 @@ public class MarathonDiscoveryClientTests {
     }
 
     @Test
-    public void test_nullable_local_instance() {
-        Assert.assertNull(discoveryClient.getLocalServiceInstance());
-    }
-
-    @Test
     public void test_list_of_servers() throws MarathonException {
         GetAppsResponse appsResponse = new GetAppsResponse();
 

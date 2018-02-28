@@ -50,7 +50,7 @@ public class MarathonHealthConfigErrorTests {
 
     @Test
     public void test_unhealthy_health_endpoint() throws Exception {
-        Assert.assertEquals(503, mvc.perform(get("/health")).andReturn().getResponse().getStatus());
+        Assert.assertEquals(503, mvc.perform(get("/actuator/health")).andReturn().getResponse().getStatus());
     }
 
     @Configuration

@@ -55,7 +55,7 @@ public class MarathonEndpointTests {
 
     @Test
     public void test_endpoint() throws Exception {
-        MockHttpServletResponse response = mvc.perform(get("/marathon"))
+        MockHttpServletResponse response = mvc.perform(get("/actuator/marathon"))
                 .andExpect(MockMvcResultMatchers.jsonPath("serverInfo", anything()))
                 .andExpect(MockMvcResultMatchers.jsonPath("apps[0].id", equalTo("test-app")))
                 .andReturn()

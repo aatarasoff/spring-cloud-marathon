@@ -9,8 +9,8 @@ dependencies {
     compile "org.springframework.boot:spring-boot-configuration-processor"
     compile "org.springframework.cloud:spring-cloud-commons"
     compile "org.springframework.cloud:spring-cloud-netflix-core"
-    compile "org.springframework.cloud:spring-cloud-starter-ribbon"
-    compile "org.springframework.cloud:spring-cloud-starter-feign"
+    compile "org.springframework.cloud:spring-cloud-starter-netflix-ribbon"
+    compile "org.springframework.cloud:spring-cloud-starter-openfeign"
 
     compile "com.mesosphere:marathon-client"
     compile "com.netflix.feign:feign-ribbon"
