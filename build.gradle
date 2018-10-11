@@ -15,6 +15,9 @@ buildscript {
     }
 }
 
+plugins {
+    id 'nebula.release' version '6.3.5'
+}
 
 allprojects {
     group = 'info.developerblog.spring.cloud'
