@@ -7,6 +7,7 @@ import mesosphere.marathon.client.MarathonException;
 import mesosphere.marathon.client.model.v2.App;
 import mesosphere.marathon.client.model.v2.GetAppResponse;
 import mesosphere.marathon.client.model.v2.Task;
+import mesosphere.marathon.client.model.v2.VersionedApp;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.reflectionassert.ReflectionAssert;
@@ -50,7 +51,7 @@ public class MarathonServerListTests {
         when(marathonClient.getApp("/service1"))
                 .thenReturn(appResponse);
 
-        App app = new App();
+        VersionedApp app = new VersionedApp();
         appResponse.setApp(app);
 
         app.setTasks(IntStream.of(1,2)

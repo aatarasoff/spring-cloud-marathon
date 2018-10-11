@@ -6,6 +6,7 @@ import mesosphere.marathon.client.MarathonException;
 import mesosphere.marathon.client.model.v2.App;
 import mesosphere.marathon.client.model.v2.GetAppsResponse;
 import mesosphere.marathon.client.model.v2.GetServerInfoResponse;
+import mesosphere.marathon.client.model.v2.VersionedApp;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -75,7 +76,7 @@ public class MarathonEndpointTests {
             when(client.getServerInfo()).thenReturn(new GetServerInfoResponse());
 
             GetAppsResponse appsResponse = new GetAppsResponse();
-            App app = new App();
+            VersionedApp app = new VersionedApp();
             app.setId("test-app");
             appsResponse.setApps(Collections.singletonList(app));
             when(client.getApps()).thenReturn(appsResponse);

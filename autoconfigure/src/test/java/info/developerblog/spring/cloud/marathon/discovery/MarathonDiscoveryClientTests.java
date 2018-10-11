@@ -7,6 +7,7 @@ import mesosphere.marathon.client.model.v2.GetAppResponse;
 import mesosphere.marathon.client.model.v2.GetAppsResponse;
 import mesosphere.marathon.client.model.v2.HealthCheckResults;
 import mesosphere.marathon.client.model.v2.Task;
+import mesosphere.marathon.client.model.v2.VersionedApp;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -56,7 +57,7 @@ public class MarathonDiscoveryClientTests {
         );
 
         //add first application
-        App app1 = new App();
+        VersionedApp app1 = new VersionedApp();
         app1.setId("app1");
 
         appsResponse.getApps().add(app1);
@@ -69,7 +70,7 @@ public class MarathonDiscoveryClientTests {
         );
 
         //add another application
-        App app2 = new App();
+        VersionedApp app2 = new VersionedApp();
         app2.setId("app2");
 
         appsResponse.getApps().add(app2);
@@ -91,7 +92,7 @@ public class MarathonDiscoveryClientTests {
         when(marathonClient.getApp("/app1"))
                 .thenReturn(appResponse);
 
-        appResponse.setApp(new App());
+        appResponse.setApp(new VersionedApp());
         appResponse.getApp().setTasks(new ArrayList<>());
 
         Task taskWithNoHealthChecks = new Task();
@@ -172,7 +173,7 @@ public class MarathonDiscoveryClientTests {
 
         appsResponse.setApps(new LinkedList<>());
 
-        App app1 = new App();
+        VersionedApp app1 = new VersionedApp();
         appsResponse.getApps().add(app1);
         app1.setId("/group1/app");
         app1.setTasks(new ArrayList<>());
@@ -193,7 +194,7 @@ public class MarathonDiscoveryClientTests {
         app1Response.setApp(app1);
         when(marathonClient.getApp("/group1/app")).thenReturn(app1Response);
 
-        App app2 = new App();
+        VersionedApp app2 = new VersionedApp();
         appsResponse.getApps().add(app2);
         app2.setId("/group2/app");
         app2.setTasks(new ArrayList<>());
@@ -227,7 +228,7 @@ public class MarathonDiscoveryClientTests {
         when(marathonClient.getApp("/group2/app")).thenReturn(app2Response);
 
 
-        App app3 = new App();
+        VersionedApp app3 = new VersionedApp();
         appsResponse.getApps().add(app3);
         app3.setId("/group3/app");
         app3.setTasks(new ArrayList<>());

@@ -8,6 +8,7 @@ import mesosphere.marathon.client.model.v2.App;
 import mesosphere.marathon.client.model.v2.GetAppResponse;
 import mesosphere.marathon.client.model.v2.GetAppsResponse;
 import mesosphere.marathon.client.model.v2.Task;
+import mesosphere.marathon.client.model.v2.VersionedApp;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.reflectionassert.ReflectionAssert;
@@ -59,7 +60,7 @@ public class MarathonServerListIgnoreServiceIdTests {
         when(marathonClient.getApps(queryMap))
                 .thenReturn(appsResponse);
 
-        App app = new App();
+        VersionedApp app = new VersionedApp();
         appResponse.setApp(app);
 
         app.setId("/service1");
@@ -82,7 +83,7 @@ public class MarathonServerListIgnoreServiceIdTests {
                 .collect(Collectors.toList()));
         app.getTasks().add(withNullHealthChecks);
 
-        List<App> apps = new ArrayList<>();
+        List<VersionedApp> apps = new ArrayList<>();
         apps.add(app);
         appsResponse.setApps(apps);
 

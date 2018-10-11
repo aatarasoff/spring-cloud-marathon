@@ -19,6 +19,7 @@ import mesosphere.marathon.client.Marathon;
 import mesosphere.marathon.client.model.v2.App;
 import mesosphere.marathon.client.model.v2.GetAppResponse;
 import mesosphere.marathon.client.model.v2.GetAppsResponse;
+import mesosphere.marathon.client.model.v2.VersionedApp;
 
 /**
  * Created by aleksandr on 07.07.16.
@@ -83,7 +84,7 @@ public class MarathonDiscoveryClient implements DiscoveryClient {
         GetAppsResponse appsResponse = queryMap == null ? client.getApps() : client.getApps(queryMap);
 
         if (appsResponse != null && appsResponse.getApps() != null) {
-            List<App> apps = appsResponse.getApps();
+            List<VersionedApp> apps = appsResponse.getApps();
 
             log.debug("Discovered {} service{}{}", apps.size(), apps.size() == 1 ? "" : "s", queryMap == null ? "" : String.format(" with ids that contain [%s]", queryMap.get("id")));
 

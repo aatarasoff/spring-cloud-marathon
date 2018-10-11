@@ -89,3 +89,4 @@ findbugs-config.xml
 derbyDB
 derby.log
 /jbehave
+*/out/*

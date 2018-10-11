@@ -12,6 +12,7 @@ import mesosphere.marathon.client.model.v2.App;
 import mesosphere.marathon.client.model.v2.GetAppResponse;
 import mesosphere.marathon.client.model.v2.GetAppsResponse;
 import mesosphere.marathon.client.model.v2.HealthCheckResults;
+import mesosphere.marathon.client.model.v2.VersionedApp;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -169,7 +170,7 @@ public class MarathonServerList extends AbstractServerList<MarathonServer> {
 
                 if (appsResponse!=null && appsResponse.getApps()!=null) {
 
-                	List<App> apps = appsResponse.getApps();
+                	List<VersionedApp> apps = appsResponse.getApps();
                 	
                 	log.debug("Discovered {} service{}{}", apps.size(), apps.size() == 1 ? "" : "s", ignoreServiceId ? "" : String.format(" with ids that contain [%s]", serviceId));
 

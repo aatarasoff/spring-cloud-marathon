@@ -1,19 +1,16 @@
 buildscript {
     repositories {
-        maven {
-            url 'https://repo.spring.io/libs-milestone'
-        }
         jcenter()
         maven {
             url "https://plugins.gradle.org/m2/"
         }
     }
     dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.0.0.RC2")
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.2'
+        classpath 'org.springframework.boot:spring-boot-gradle-plugin:2.0.1.RELEASE'
+        classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:3.2.0'
+        classpath 'com.netflix.nebula:nebula-publishing-plugin:5.1.0'
         classpath 'com.netflix.nebula:nebula-project-plugin:3.2.1'
-        classpath 'com.netflix.nebula:gradle-extra-configurations-plugin:2.2.+'
-        classpath 'com.netflix.nebula:nebula-release-plugin:4.0.1'
         classpath 'org.kt3k.gradle.plugin:coveralls-gradle-plugin:2.6.3'
     }
 }
@@ -24,31 +21,22 @@ allprojects {
     version = '0.0.1'
 
     repositories {
-        maven {
-            url 'https://repo.spring.io/libs-milestone'
-        }
         jcenter()
         mavenLocal()
         mavenCentral()
-        maven {
-            url "https://downloads.mesosphere.com/maven/"
-        }
     }
 
     apply plugin: 'idea'
     apply plugin: 'io.spring.dependency-management'
-    apply plugin: 'provided-base'
-    apply plugin: 'optional-base'
-    apply plugin: 'nebula.nebula-release'
 
     dependencyManagement {
         imports {
-            mavenBom "org.springframework.cloud:spring-cloud-starter-parent:Finchley.M7"
+            mavenBom "org.springframework.cloud:spring-cloud-starter-parent:Finchley.SR1"
         }
 
         dependencies {
             dependency 'org.projectlombok:lombok:1.16.8'
-            dependency 'com.mesosphere:marathon-client:0.5.0'
+            dependency 'com.mesosphere:marathon-client:0.6.0'
             dependency 'com.netflix.feign:feign-ribbon:8.14.1'
             dependency 'org.unitils:unitils-core:3.4.2'
             dependency 'com.jayway.jsonpath:json-path:2.2.0'
@@ -76,10 +64,13 @@ subprojects {
     }
 
     dependencies {
-        provided 'org.projectlombok:lombok'
+        compileOnly 'org.projectlombok:lombok'
 
         testCompile 'org.springframework.boot:spring-boot-starter-test'
-        testCompile 'org.unitils:unitils-core'
+        testCompile ('org.unitils:unitils-core') {
+            //exclude this cause it has conflict with slf4j
+            exclude group: 'commons-logging'
+        }
         testCompile 'com.jayway.jsonpath:json-path'
     }
 }

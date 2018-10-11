@@ -1,20 +1,34 @@
-apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.bintray'
+apply plugin: 'nebula.maven-publish'
+apply plugin: 'nebula.compile-api'
+apply plugin: 'nebula.source-jar'
 apply plugin: 'jacoco'
 apply plugin: 'com.github.kt3k.coveralls'
 apply plugin: 'nebula.integtest-standalone'
+apply plugin: 'com.jfrog.bintray'
 
 dependencies {
-    provided "org.springframework.boot:spring-boot-starter-web", optional
-    provided "org.springframework.boot:spring-boot-starter-actuator", optional
-    provided "org.springframework.boot:spring-boot-configuration-processor", optional
-    provided "org.springframework.cloud:spring-cloud-commons", optional
-    provided "org.springframework.cloud:spring-cloud-netflix-core", optional
-    provided "org.springframework.cloud:spring-cloud-starter-netflix-ribbon", optional
-    provided "org.springframework.cloud:spring-cloud-starter-openfeign", optional
+    compileOnly "org.springframework.boot:spring-boot-starter-web"
+    compileOnly "org.springframework.boot:spring-boot-starter-actuator"
+    compileOnly "org.springframework.boot:spring-boot-configuration-processor"
+    compileOnly "org.springframework.cloud:spring-cloud-commons"
+    compileOnly "org.springframework.cloud:spring-cloud-netflix-core"
+    compileOnly "org.springframework.cloud:spring-cloud-starter-netflix-ribbon"
+    compileOnly "org.springframework.cloud:spring-cloud-starter-openfeign"
 
-    provided "com.mesosphere:marathon-client", optional
-    provided "com.netflix.feign:feign-ribbon", optional
+    compileOnly "com.mesosphere:marathon-client"
+    compileOnly "com.netflix.feign:feign-ribbon"
+
+    //FIXME: sourceSets fails on NoClassDef exception
+    integTestCompile "org.springframework.boot:spring-boot-starter-web"
+    integTestCompile "org.springframework.boot:spring-boot-starter-actuator"
+    integTestCompile "org.springframework.boot:spring-boot-configuration-processor"
+    integTestCompile "org.springframework.cloud:spring-cloud-commons"
+    integTestCompile "org.springframework.cloud:spring-cloud-netflix-core"
+    integTestCompile "org.springframework.cloud:spring-cloud-starter-netflix-ribbon"
+    integTestCompile "org.springframework.cloud:spring-cloud-starter-openfeign"
+
+    integTestCompile "com.mesosphere:marathon-client"
+    integTestCompile "com.netflix.feign:feign-ribbon"
 }
 
 jacoco {
@@ -25,24 +39,6 @@ jacocoTestReport {
     reports {
         xml.enabled = true
         html.enabled = true
-    }
-}
-
-task sourceJar(type: Jar) {
-    from sourceSets.main.allJava
-}
-
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            artifactId 'spring-cloud-marathon-autoconfigure'
-
-            from components.java
-
-            artifact sourceJar {
-                classifier "sources"
-            }
-        }
     }
 }
 
@@ -83,3 +79,9 @@ task integrationTestsTeardown(type: Exec) {
 integrationTestsDeploy.dependsOn(integrationTestsSetup)
 integrationTest.dependsOn(integrationTestsDeploy)
 integrationTest.finalizedBy(integrationTestsTeardown)
+
+
+sourceSets {
+    test.compileClasspath += configurations.compileOnly
+    test.runtimeClasspath += configurations.compileOnly
+}

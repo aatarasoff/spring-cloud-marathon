@@ -3,6 +3,8 @@ package info.developerblog.spring.cloud.marathon.actuator;
 import mesosphere.marathon.client.Marathon;
 import mesosphere.marathon.client.model.v2.App;
 import mesosphere.marathon.client.model.v2.GetServerInfoResponse;
+import mesosphere.marathon.client.model.v2.VersionedApp;
+
 import org.springframework.boot.actuate.health.AbstractHealthIndicator;
 import org.springframework.boot.actuate.health.Health;
 
@@ -22,7 +24,7 @@ public class MarathonHealthIndicator extends AbstractHealthIndicator {
     protected void doHealthCheck(Health.Builder builder) throws Exception {
         try {
             GetServerInfoResponse serverInfo = client.getServerInfo();
-            List<App> apps = client.getApps().getApps();
+            List<VersionedApp> apps = client.getApps().getApps();
             builder.up()
                     .withDetail("services", apps)
                     .withDetail("name", serverInfo.getName())
