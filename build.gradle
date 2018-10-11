@@ -21,7 +21,6 @@ plugins {
 
 allprojects {
     group = 'info.developerblog.spring.cloud'
-    version = '0.0.1'
 
     repositories {
         jcenter()
