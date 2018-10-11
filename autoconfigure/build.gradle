@@ -45,7 +45,7 @@ jacocoTestReport {
 bintray {
     user = System.properties['BINTRAY_USER']
     key = System.properties['BINTRAY_KEY']
-    publications = ['mavenJava']
+    publications = ['nebula']
     publish = true
     pkg {
         repo = 'maven'
